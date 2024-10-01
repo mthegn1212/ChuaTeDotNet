@@ -1,0 +1,28 @@
+﻿@model IEnumerable<BatDongSan.Models.News>
+
+<div style="background-image: url('@Url.Content("~/images/bg_2.jpg")'); background-size: 100%;">
+    <div class="container">
+        <main role="main" class="pb-3">
+            <section class="ftco-section" id="blog-section">
+                <div class="container">
+                    <!-- Các mã HTML khác để hiển thị tin tức -->
+                    @foreach (var blog in Model)
+                    {
+                        <div class="col-md-6 col-lg-4 d-flex ftco-animate">
+                            <div class="blog-entry justify-content-end">
+                                <a href="@Url.Action("Single", "Home", new { id = blog.Id })" class="block-20" style="background-image: url('@Url.Content("~/images/" + blog.Img)');">
+                                </a>
+                                <div class="text float-right d-block">
+                                    <h3 class="heading"><a href="@Url.Action("Single", "Home", new { id = blog.Id })">@blog.Name</a></h3>
+                                    <p>@blog.Description</p>
+                                    <!-- Các mã HTML khác -->
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
