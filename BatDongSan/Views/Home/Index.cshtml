@@ -1,24 +1,25 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<div style="background-image: url('@Url.Content("~/images/bg_2.jpg")'); background-size: 100%;"> 
+<div style="background-image: url('@Url.Content("~/images/bg_2.jpg")'); background-size: 100%; background-repeat: no-repeat;">
     <div class="container">
         <main role="main" class="pb-3">
 
-            <section class="hero-wrap js-fullheight"  data-section="home" data-stellar-background-ratio="0.5">
+            <section class="hero-wrap js-fullheight" data-section="home" data-stellar-background-ratio="0.5">
                 <div class="overlay"></div>
                 <div class="container">
                     <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start" data-scrollax-parent="true">
                         <div class="col-md-5 ftco-animate" data-scrollax="properties: { translateY: '70%' }">
                             <h1 class="mb-5" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Get your way home worldwide</h1>
                             <p class="mb-5" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
+
                             <form action="#" class="search-location">
                                 <div class="row">
                                     <div class="col-lg align-items-end">
                                         <div class="form-group">
                                             <div class="form-field">
                                                 <input type="text" class="form-control" placeholder="Search location">
-                                                <button type="submit"><span class="ion-ios-search"></span></button>
+                                                <button type="submit" class="btn btn-outline-primary"><span class="fas fa-search"></span></button>
                                             </div>
                                         </div>
                                     </div>
@@ -28,6 +29,92 @@
                     </div>
                 </div>
             </section>
+            <!-- Locations Section -->
         </main>
     </div>
 </div>
+<section class="locations-section py-5 " >
+    <div class="container">
+        <h2 class="text-left mb-5">Bất động sản theo địa điểm</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="location-card" style="background-image: url('@Url.Content("~/images/HCM_1.jpg")')">
+                    <div class="overlay"></div>
+                    <h3>TP. Hồ Chí Minh</h3>
+                    <p>66,580 tin đăng</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="location-card" style="background-image: url('@Url.Content("~/images/HN.jpg")')">
+                    <div class="overlay"></div>
+                    <h3>Hà Nội</h3>
+                    <p>65,096 tin đăng</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="location-card" style="background-image: url('@Url.Content("~/images/DN.jpg")')">
+                    
+                    <h3>Đà Nẵng</h3>
+                    <p>8,214 tin đăng</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="locations-section p-0 ">
+    <div class="container">
+        <h2 class="text-left mb-5">Dự án bất động sản mới nhất</h2>
+        <div class="row">
+            @foreach(var pro in ViewBag.Top4Projects)
+            {
+            <div class="item col-md-3 col-sm-4 mb-3">
+                    <div class="properties ftco-animate">
+                        <div class="img">
+                            <img src="@Url.Content("~/images/" + pro.Img)" class="img-fluid" alt="Colorlib Template">
+                        </div>
+                        <div class="desc">
+                            <div class="d-flex">
+                                <div>
+                                    <h3><a href="@Url.Action("Details", "Properties", new { id = 1 })">@pro.Name</a></h3>
+                                </div>
+                                
+                            </div>
+                            <div>
+                                <p>@pro.Description</p>
+                            </div>
+                            <div class="pl-md-3" style="padding: 0px">
+                                <p class="price" style="align-items:flex-start">$ @pro.price - 100m&sup2;</p>
+                            </div>
+                            <p class="h-info">
+                                <span><i class="fas fa-map-marker-alt m-1"></i></span>
+                                <span class="location">@pro.locate</span> </p>
+                        </div>
+                    </div>
+               </div>
+            }
+        </div>
+    </div>
+</section>
+<section class="ftco-section p-0" id="blog-section">
+    <div class="container">
+        <h2 class="text-left mb-5">Tin tức bất động sản</h2>
+        <div class="row">
+            @{
+                @foreach (var blog in ViewBag.Top4News)
+                {
+                    <div class="col-md-3 col-lg-3 d-flex ftco-animate">
+                        <div class="blog-entry ">
+                            <a href="@Url.Action("news", new { id = blog.Meta })">
+                                <img class="img-fluid" src="@Url.Content("~/images/" + blog.Img)">
+                            </a>
+                            <div class="text float-right d-block">
+                                <h3 class="heading"><a href="@Url.Action("news", new { id = blog.Id })">@blog.Name</a></h3>
+                                <p>@blog.Description</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>

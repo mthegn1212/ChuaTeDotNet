@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "_Layout1";
+}
+@{
+    var pro = ViewBag.ProjectById;
+}
+<body class="ftco-section">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8">
+                <div id="mainCarousel" class="carousel " data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="@Url.Content("~/images/"+@pro.Img)" class="d-block fixed-size-img" alt="Main Image">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://via.placeholder.com/800x400" class="d-block w-100" alt="Image 2">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://via.placeholder.com/800x400" class="d-block w-100" alt="Image 3">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-center">
+                    <img src="https://via.placeholder.com/100x75" class="me-2 img-thumbnail" alt="Thumbnail 1">
+                    <img src="https://via.placeholder.com/100x75" class="me-2 img-thumbnail" alt="Thumbnail 2">
+                    <img src="https://via.placeholder.com/100x75" class="me-2 img-thumbnail" alt="Thumbnail 3">
+                    <img src="https://via.placeholder.com/100x75" class="img-thumbnail" alt="Thumbnail 4">
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="mt-4">
+                    <h5>Chi tiết nhà bán</h5>
+                    <p><strong>Địa chỉ:</strong> @pro.locate</p>
+                    <p><strong>Mức giá:</strong> @pro.price</p>
+                    <p><strong>Diện tích:</strong> 48 m²</p>
+                    <p><strong>Phòng ngủ:</strong> 4 PN</p>
+                </div>
+
+                <div class="mt-3">
+                    <button class="btn btn-primary me-2">Yêu cầu liên hệ lại</button>
+                    <button class="btn btn-outline-secondary">Chia sẻ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar với danh sách khu vực khác -->
+        <div class="row mt-5">
+            <div class="col-md-8">
+                <h4>Mô tả chi tiết</h4>
+                <p>@pro.Description</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Bán nhà riêng tại Quận Bình Thạnh</h5>
+                <ul class="list-group m-1">
+                    @{
+                        foreach (var project in ViewBag.Top5Pro)
+                        {
+                            <li class="list-group-item">
+                            <img src = "@Url.Content("~/images/"+project.Img)" style="width:28px; height:28px; object-fit: cover"/>
+                                <span class="p-0">@project.Name</span>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>

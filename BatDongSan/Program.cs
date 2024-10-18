@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Thêm các dịch vụ vào container.
 builder.Services.AddScoped<MenuService>();
 builder.Services.AddScoped<NewsService>(); // Đăng ký NewsService
+builder.Services.AddScoped<ProjectService>(); // Đăng ký NewsService
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<MyDbContext>(options =>
@@ -50,5 +51,10 @@ app.MapControllerRoute(
     name: "news",
     pattern: "news",
     defaults: new { controller = "News", action = "Index" });
+
+app.MapControllerRoute(
+    name: "signIn",
+    pattern: "signIn",
+    defaults: new { controller = "SignIn", action = "Index" });
 
 app.Run();
