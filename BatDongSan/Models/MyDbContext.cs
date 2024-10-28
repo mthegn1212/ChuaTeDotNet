@@ -11,8 +11,15 @@ namespace BatDongSan.Models
         }
 
         public DbSet<MenuItem> MenuItem { get; set; }
-        public DbSet<News> News { get; set; } // Thêm DbSet cho News
+        public DbSet<News> News { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Account> Accounts { get; set; }
-    }
+		public DbSet<ChildMenus> ChildMenus { get; set; }
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			base.OnModelCreating(modelBuilder);
+			SeedData.Seed(modelBuilder);
+		}
+	}
 }

@@ -37,9 +37,9 @@ app.MapControllerRoute(
 
 // Thêm routing cho about
 app.MapControllerRoute(
-    name: "about",
-    pattern: "about",
-    defaults: new { controller = "About", action = "Index" });
+    name: "PostNew",
+    pattern: "PostNew",
+    defaults: new { controller = "Listing", action = "PostNew" });
 
 // Route mặc định
 app.MapControllerRoute(

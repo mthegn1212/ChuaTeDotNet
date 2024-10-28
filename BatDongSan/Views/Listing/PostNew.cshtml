@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "Đăng Tin";
+    Layout = "_Layout1";
+}
+<div class="ftco-section">
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" style="color:white">Thông tin địa chỉ</h5>
+            </div>
+            <div class="card-body">
+                <form id="form1" action="@Url.Action("Preview","Listing")">
+                    <div class="mb-4">
+                        <label for="tinhThanh" class="form-label">Tỉnh/Thành</label>
+                        <select class="form-control custom-select" id="tinhThanh" required>
+                            <option selected>Hồ Chí Minh</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="quanHuyen" class="form-label">Quận/Huyện</label>
+                        <select class="form-control custom-select" id="quanHuyen" required>
+                            <option selected>Gò Vấp</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="phuongXa" class="form-label">Phường/Xã</label>
+                        <select class="form-control custom-select" id="phuongXa" required>
+                            <option selected>Phường 15</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="duongPho" class="form-label">Đường/Phố (không bắt buộc)</label>
+                        <select class="form-control custom-select" id="duongPho">
+                            <option selected>Đường 2</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="duAn" class="form-label">Dự án (không bắt buộc)</label>
+                        <select class="form-control custom-select" id="duAn">
+                            <option selected>Phú Gia Hưng Apartment</option>
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-end ">
+                        <button type="button" class="align-items-center btn btn-primary" id="tiepTuc1">Tiếp tục</button>
+                    </div>
+                    <div id="form2" class="d-none">
+                        <div class="mb-4">
+                            <label for="loaiBDS" class="form-label">Loại BDS</label>
+                            <select class="form-select custom-select" id="loaiBDS" required>
+                                    <option selected>Loại BDS khác</option>
+                                </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="dienTich" class="form-label">Diện tích</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="dienTich" required>
+                                <span class="input-group-text">m²</span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="mucGia" class="form-label">Mức giá</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="mucGia" required>
+                                <span class="input-group-text">VND/m²</span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="moTa" class="form-label">Mô tả</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="moTa" required>
+                                
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="uploadAnh" class="form-label">Tải lên hình ảnh</label>
+                            <input type="file" class="form-control" id="uploadAnh" accept="image/*" multiple>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary" id="tiepTuc2">Xác Nhận</button>
+                        </div>
+                        <div id="previewImages" class="d-flex flex-wrap"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

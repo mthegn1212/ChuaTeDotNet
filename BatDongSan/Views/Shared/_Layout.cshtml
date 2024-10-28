@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Linq;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -12,7 +13,7 @@
     <link rel="stylesheet" href="~/css/animate.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/owl.carousel.min.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/owl.theme.default.min.css" asp-append-version="true">
-    <link rel="stylesheet" href="~/css/magnific-popup.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/magnific-popup.css" asp-append-version="true">   
     <link rel="stylesheet" href="~/css/aos.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/ionicons.min.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/flaticon.css" asp-append-version="true">
@@ -35,7 +36,7 @@
                                 <span class="text">GoodLands@gmail.com</span>
                             </div>
                             <div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right justify-content-end">
-                                <p class="mb-0 register-link"><a href="@Url.Action("SignUp", "SignIn")" class="mr-3">Sign Up</a><a href="@Url.Action("Index", "SignIn")">Sign In</a></p>
+                                <p class="mb-0 register-link"><a href="@Url.Action("SignUp", "SignIn")" class="mr-3 btn-link">Sign Up</a><a class="btn-link" href="@Url.Action("Index", "SignIn")">Sign In</a></p>
                             </div>
                         </div>
                     </div>
@@ -54,9 +55,26 @@
                     <ul class="navbar-nav nav ml-auto">
                         @foreach (var item in ViewBag.MenuItems)
                         {
-                            <li class="nav-item">
-                                <a href="@item.Link" class="nav-link"><span>@item.Name</span></a>
-                            </li>
+                            if (item.HasChild())
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="@item.Link" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        @item.Name
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        @foreach (var child in item.ChildMenus)
+                                        {
+                                            <li><a class="dropdown-item" href="@item.Link@child.Link">@child.Name</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a href="@item.Link" class="nav-link"><span>@item.Name</span></a>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>

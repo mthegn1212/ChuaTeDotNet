@@ -25,7 +25,7 @@ namespace BatDongSan.Controllers
 
         public IActionResult Index()
         {
-            var menuItems = _menuService.GetMenuItems(); // Lấy danh sách menu
+            var menuItems = _menuService.GetMenuItems();
             ViewBag.MenuItems = menuItems;
 
             var Projects = _projectService.GetTop5();
@@ -33,7 +33,7 @@ namespace BatDongSan.Controllers
 
             var News = _newService.GetTop4();
             ViewBag.Top4News = News;
-            return View(); // Trả về View mà không cần truyền model, vì menu đã có trong ViewBag
+            return View();
         }
 
 

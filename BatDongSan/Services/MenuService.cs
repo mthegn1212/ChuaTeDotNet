@@ -17,7 +17,8 @@ namespace BatDongSan.Services
         public List<MenuItem> GetMenuItems()
         {
             return _context.MenuItem
-                .Where(m => m.Hide == false)
+				.Include(m => m.ChildMenus)
+				.Where(m => m.Hide == false)
                 .OrderBy(m => m.Order)
                 .ToList();
         }

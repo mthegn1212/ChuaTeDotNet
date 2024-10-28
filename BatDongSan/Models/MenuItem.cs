@@ -9,5 +9,10 @@
         public bool Hide { get; set; }
         public int Order { get; set; }
         public DateTime DateBegin { get; set; }
+		public virtual ICollection<ChildMenus> ChildMenus { get; set; } = new List<ChildMenus>();
+        public bool HasChild()
+        {
+            return ChildMenus != null && ChildMenus.Any();
+        }
     }
 }

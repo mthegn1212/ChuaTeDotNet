@@ -34,7 +34,7 @@
                                 <span class="text">GoodLands@gmail.com</span>
                             </div>
                             <div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right justify-content-end">
-                                <p class="mb-0 register-link"><a href="@Url.Action("SignUp", "SignIn")" class="mr-3">Sign Up</a><a href="@Url.Action("Index", "SignIn")">Sign In</a></p>
+                                <p class="mb-0 register-link"><a href="@Url.Action("SignUp", "SignIn")" class="mr-3 btn-link">Sign Up</a><a class="btn-link" href="@Url.Action("Index", "SignIn")">Sign In</a></p>
                             </div>
                         </div>
                     </div>
@@ -42,7 +42,6 @@
             </div>
         </div>
 
-        <!-- Navigation Bar -->
         <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar ftco-navbar-light site-navbar-target border-1" id="ftco-navbar" >
             <div class="container">
                 <a class="navbar-brand" href="/" style="color: black">GoodLands</a>
@@ -54,9 +53,26 @@
                     <ul class="navbar-nav nav ml-auto">
                         @foreach (var item in ViewBag.MenuItems)
                         {
-                            <li class="nav-item">
-                                <a href="@item.Link" class="nav-link" style="color: black"><span>@item.Name</span></a>
-                            </li>
+                            if (item.HasChild())
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" style="color: black" href="@item.Link" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        @item.Name
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        @foreach (var child in item.ChildMenus)
+                                        {
+                                            <li><a class="dropdown-item" href="@item.Link@child.Link">@child.Name</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a href="@item.Link" class="nav-link" style="color: black"><span>@item.Name</span></a>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
@@ -64,9 +80,8 @@
         </nav>
     </header>
 
-    <!-- Main Content -->
-        @RenderBody()
-    <!-- Footer -->
+    @RenderBody()
+
     <footer class="ftco-footer ftco-section">
         <div class="container-fluid px-md-5">
             <div class="row mb-3">
@@ -92,10 +107,8 @@
         </div>
     </footer>
 
-    <!-- Loader -->
     <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" /><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00" /></svg></div>
 
-    <!-- Scripts -->
     <script src="~/js/jquery.min.js"></script>
     <script src="~/js/jquery-migrate-3.0.1.min.js"></script>
     <script src="~/js/popper.min.js"></script>

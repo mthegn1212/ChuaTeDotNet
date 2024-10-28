@@ -1,0 +1,104 @@
+﻿
+@{
+	ViewData["Title"] = "Dự án mua bán";
+	Layout = "_Layout1";
+}
+<section class="ftco-section">
+	<div class="container align-item-center">
+		<div class="row">
+			<div class="row col-md-9 mb-3" id="filterList">
+				<form method="GET" class="col-12 pr-0">
+					<div class="col d-flex flex-row">
+						<span class="fas fa-filter m-2"></span>
+						<select class="form-select align-items-center mr-2" aria-label="Mức Giá">
+							<option selected>Mức Giá</option>
+							<option value="">Dưới 1 triệu</option>
+							<option value="">1 - 5 triệu</option>
+							<option value="">5 - 10 triệu</option>
+							<option value="">10 - 20 triệu</option>
+							<option value="">20 - 50 triệu</option>
+							<option value="">trên 50 triệu</option>
+						</select>
+						<select class="form-select align-items-center mr-2" aria-label="Diện Tích">
+							<option selected>Diện tích</option>
+							<option value="0-30">Dưới 30 m²</option>
+							<option value="30-50">30 - 50 m²</option>
+							<option value="50-80">50 - 80 m²</option>
+							<option value="80-100">80 - 100 m²</option>
+							<option value="100-150">100 - 150 m²</option>
+							<option value="150-200">150 - 200 m²</option>
+							<option value="200+">trên 200 m²</option>
+						</select>
+
+						<select class="form-select align-items-center " aria-label="Địa điểm">
+							<option selected>Địa Điểm</option>
+							<option value="Hanoi">Hà Nội</option>
+							<option value="HCMC">TP.Hồ Chí Minh</option>
+							<option value="Danang">Đà Nẵng</option>
+						</select>
+
+						<button type="submit" class="btn btn-black ml-auto" style="background-color: gray !important; border:none !important"> Apply Filters </button>
+					</div>
+				</form>
+			</div>
+			<div class="col-md-9">
+				<div class="row">
+					@{
+						if (ViewBag.SalePro.Count < 1)
+						{   
+							<h2> Hiện chưa có dự án nào</h2>
+						}
+						else
+							foreach (var pro in ViewBag.SalePro)
+							{
+								<a href="@Url.Action("Details", "Listing", new { id = pro.Id })" class="item col-md-6" style="text-decoration: none; color: inherit;">
+									<div class="properties ftco-animate">
+										<img src="@Url.Content("~/images/" + pro.Img)" style="display: block; height: 300px; width: 100%;" alt="Colorlib Template">
+										<div class="desc">
+											<div class="d-flex pt-5">
+												<div>
+													<h3>@pro.Name</h3>
+												</div>
+											</div>
+											<div class="pr-md-3">
+												<span class="price" style="align-items:flex-start">$@pro.price VNĐ - @pro.Area m&sup2;</span>
+												<span class="h-info pr-1">
+													<span><i class="fas fa-map-marker-alt m-1"></i></span>
+													<span class="location" style="color: black">@pro.locate</span>
+												</span>
+											</div>
+											<span>
+												<p>@pro.Description</p>
+											</span>
+										</div>
+									</div>
+								</a>
+							}
+					}
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-body">
+						<h5 class="card-title">Tin tức mới nhất</h5>
+						<ul class="list-group">
+							@{
+								var dem = 1;
+								foreach(var news in ViewBag.News)
+								{
+									<li class="list-group-item d-flex align-items-start">
+										<span class="list-group-item-number mr-1">@dem.</span>
+										<div>
+											<a href="#">@news.Name</a>
+										</div>
+									</li>
+									dem++;
+								}
+							}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
