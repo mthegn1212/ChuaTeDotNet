@@ -1,24 +1,24 @@
-﻿using BatDongSan.Models; // Nhớ thêm namespace của model
+﻿using BatDongSan.Models; 
 using BatDongSan.Services;
 using Microsoft.AspNetCore.Mvc;
 
 public class NewsController : Controller
 {
-    private readonly MenuService _menuService; // Thêm MenuService để lấy menu items
+    private readonly MenuService _menuService; 
     private readonly NewsService _newsService;
 
     public NewsController(MenuService menuService, NewsService newsService)
     {
-        _menuService = menuService; // Khởi tạo MenuService
-        _newsService = newsService; // Khởi tạo NewsService
+        _menuService = menuService; 
+        _newsService = newsService; 
     }
 
     public IActionResult Index()
     {
-        var menuItems = _menuService.GetMenuItems(); // Lấy menu items từ MenuService
-        ViewBag.MenuItems = menuItems; // Truyền vào ViewBag
+        var menuItems = _menuService.GetMenuItems(); 
+        ViewBag.MenuItems = menuItems; 
 
-        var blogEntries = _newsService.GetAllNews(); // Sử dụng phương thức để lấy tin tức
-        return View("news", blogEntries); // Trả về view news.cshtml với blogEntries
+        var blogEntries = _newsService.GetAllNews();
+        return View("news", blogEntries); 
     }
 }
