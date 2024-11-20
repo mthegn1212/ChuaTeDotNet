@@ -25,8 +25,18 @@ namespace BatDongSan.Controllers
 
         public IActionResult Index()
         {
-            var menuItems = _menuService.GetMenuItems();
-            ViewBag.MenuItems = menuItems;
+            // Kiểm tra nếu MenuItems tồn tại trong TempData
+            if (TempData["MenuItems"] != null)
+            {
+                var menuItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MenuItem>>(TempData["MenuItems"].ToString());
+                ViewBag.MenuItems = menuItems;
+            }
+            else
+            {
+                // Nếu không có menu trong TempData, lấy từ dịch vụ
+                var menuItems = _menuService.GetMenuItems();
+                ViewBag.MenuItems = menuItems;
+            }
 
             var Projects = _projectService.GetTop5();
             ViewBag.Top4Projects = Projects;
@@ -35,8 +45,7 @@ namespace BatDongSan.Controllers
             ViewBag.Top4News = News;
             return View();
         }
-
-
+        
         public IActionResult Privacy()
         {
             return View();

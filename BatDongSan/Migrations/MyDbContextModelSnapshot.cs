@@ -22,30 +22,6 @@ namespace BatDongSan.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BatDongSan.Models.Account", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<DateTime>("dateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("userName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Accounts");
-                });
-
             modelBuilder.Entity("BatDongSan.Models.ChildMenus", b =>
                 {
                     b.Property<int>("Id")
@@ -88,7 +64,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 1,
-                            DateBegin = new DateTime(2024, 10, 28, 16, 31, 21, 11, DateTimeKind.Local).AddTicks(7072),
+                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7255),
                             Hide = false,
                             Link = "/RentListing",
                             MenuItemId = 2,
@@ -99,7 +75,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 2,
-                            DateBegin = new DateTime(2024, 10, 28, 16, 31, 21, 11, DateTimeKind.Local).AddTicks(7074),
+                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7257),
                             Hide = false,
                             Link = "/SaleListing",
                             MenuItemId = 2,
@@ -146,7 +122,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 1,
-                            DateBegin = new DateTime(2024, 10, 28, 16, 31, 21, 11, DateTimeKind.Local).AddTicks(6970),
+                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7085),
                             Hide = false,
                             Link = "/",
                             Meta = "home",
@@ -156,7 +132,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 2,
-                            DateBegin = new DateTime(2024, 10, 28, 16, 31, 21, 11, DateTimeKind.Local).AddTicks(6982),
+                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7098),
                             Hide = false,
                             Link = "/listing",
                             Meta = "listing",
@@ -166,7 +142,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 3,
-                            DateBegin = new DateTime(2024, 10, 28, 16, 31, 21, 11, DateTimeKind.Local).AddTicks(6984),
+                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7100),
                             Hide = false,
                             Link = "/news",
                             Meta = "news",
@@ -176,7 +152,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 4,
-                            DateBegin = new DateTime(2024, 10, 28, 16, 31, 21, 11, DateTimeKind.Local).AddTicks(6985),
+                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7101),
                             Hide = false,
                             Link = "/PostNew",
                             Meta = "Post-New",
@@ -281,6 +257,34 @@ namespace BatDongSan.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("BatDongSan.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("BatDongSan.Models.ChildMenus", b =>

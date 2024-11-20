@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using BatDongSan.Services;
 using BatDongSan.Models;
 
@@ -7,11 +8,31 @@ var builder = WebApplication.CreateBuilder(args);
 // Thêm các dịch vụ vào container.
 builder.Services.AddScoped<MenuService>();
 builder.Services.AddScoped<NewsService>(); // Đăng ký NewsService
-builder.Services.AddScoped<ProjectService>(); // Đăng ký NewsService
-builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ProjectService>(); // Đăng ký ProjectService
 
+// Thêm DbContext
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Thêm Identity
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<MyDbContext>()
+    .AddDefaultTokenProviders();
+
+// Add Razor Pages service (fix for the error)
+builder.Services.AddRazorPages(); // This is necessary for Razor Pages to work
+
+// Add session and distributed memory cache for session management
+builder.Services.AddDistributedMemoryCache(); // For session state
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// Add MVC controllers and views
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -24,10 +45,13 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession(); // Important for session state
 
 app.UseRouting();
 
-app.UseAuthorization();
+// Add authentication and authorization middleware
+app.UseAuthentication(); // Add authentication middleware
+app.UseAuthorization();  // Add authorization middleware
 
 // Thêm routing cho listing
 app.MapControllerRoute(
@@ -54,7 +78,11 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "signIn",
-    pattern: "signIn",
-    defaults: new { controller = "SignIn", action = "Index" });
+    pattern: "SignIn",
+    defaults: new { controller = "SignIn", action = "Login" });
+
+// Ensure Razor Pages service is added
+app.MapRazorPages(); // This will map Razor Pages if you're using them
 
 app.Run();
+
