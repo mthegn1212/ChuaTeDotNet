@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BatDongSan.Services;
 using BatDongSan.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BatDongSan.Controllers
 {
@@ -9,12 +10,14 @@ namespace BatDongSan.Controllers
 		private readonly MenuService _menuService;
 		private readonly ProjectService _projectService;
 		private readonly NewsService _newService;
+		private readonly MyDbContext _context;
 
-		public ListingController(MenuService menuService, ProjectService projectService, NewsService newService)
+		public ListingController(MenuService menuService, ProjectService projectService, NewsService newService, MyDbContext context)
 		{
 			_menuService = menuService;
 			_projectService = projectService;
 			_newService = newService;
+			_context = context;
 		}
 
 		public IActionResult Index()
@@ -67,14 +70,46 @@ namespace BatDongSan.Controllers
 		}
 		public IActionResult PostNew()
 		{
-			var menuItems = _menuService.GetMenuItems();
-			ViewBag.MenuItems = menuItems;
-			return View("Postnew");
+			if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserName")))
+			{
+				TempData["ErrorMessage"] = "Bạn cần đăng nhập để truy cập trang này.";
+				return RedirectToAction("Login", "SignIn");
+			}
+
+			// Truyền đối tượng rỗng cho view
+			var model = new News();
+
+			if (TempData["MenuItems"] != null)
+			{
+				var menuItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MenuItem>>(TempData["MenuItems"].ToString());
+				ViewBag.MenuItems = menuItems;
+			}
+			else
+			{
+				var menuItems = _menuService.GetMenuItems();
+				ViewBag.MenuItems = menuItems;
+			}
+
+			var salePro = _projectService.GetSalePro();
+			ViewBag.SalePro = salePro;
+			var news = _newService.GetTop4();
+			ViewBag.News = news;
+
+			return View("PostNew", model); // Truyền model vào view
 		}
+
 		public IActionResult Preview()
 		{
-			var menuItems = _menuService.GetMenuItems();
-			ViewBag.MenuItems = menuItems;
+			if (TempData["MenuItems"] != null)
+			{
+				var menuItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MenuItem>>(TempData["MenuItems"].ToString());
+				ViewBag.MenuItems = menuItems;
+			}
+			else
+			{
+				var menuItems = _menuService.GetMenuItems();
+				ViewBag.MenuItems = menuItems;
+			}
 			return View("Preview");
 		}
 	}

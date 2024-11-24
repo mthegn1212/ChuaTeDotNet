@@ -41,8 +41,10 @@
                             <p class="mb-0 register-link">
                                 @if (!string.IsNullOrEmpty(userName))
                                 {
-                                <span>Welcome, @userName (@Context.Session.GetString("UserSessionKey"))</span>
-                                <a class="btn-link" href="@Url.Action("Logout", "SignIn")">Log Out</a>
+                                    <span>Welcome, @userName</span>
+                                    <form asp-controller="SignIn" asp-action="Logout" method="post" style="display:inline;">
+                                        <button type="submit" class="btn-link" style="border:none; background:none; color:white; cursor:pointer;">Log Out</button>
+                                    </form>
                                 }
                                 else
                                 {

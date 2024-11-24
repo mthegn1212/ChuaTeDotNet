@@ -58,6 +58,11 @@ app.MapControllerRoute(
     name: "listing",
     pattern: "listing",
     defaults: new { controller = "Listing", action = "Index" });
+app.MapControllerRoute(
+    name: "news-create",
+    pattern: "news/create",
+    defaults: new { controller = "News", action = "Create" }
+);
 
 // Thêm routing cho about
 app.MapControllerRoute(

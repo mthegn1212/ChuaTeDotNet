@@ -3,32 +3,50 @@
     ViewData["Title"] = "News";
     Layout = "_Layout1";
 }
+
 <div>
     <div class="container">
         <main role="main" class="pb-3">
             <section class="ftco-section" id="blog-section">
                 <div class="container">
-                    <div class="row">
-                    @{
-                        @foreach (var blog in Model)
-                        {
-                            <div class="col-md-6 col-lg-4 d-flex ftco-animate">
-                                <div class="blog-entry ">
-                                    <a href="@Url.Action("news", new { id = blog.Meta })" >
-                                        <img class ="img-fluid" src="@Url.Content("~/images/" + blog.Img)">
-                                    </a>
-                                    <div class="text float-right d-block">
-                                        <h3 class="heading"><a href="@Url.Action("news", new { id = blog.Id })">@blog.Name</a></h3>
-                                        <p>@blog.Description</p>
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="row">
+                            @foreach (var blog in Model)
+                            {
+                                <div class="col-md-4 mb-4">
+                                    <div class="card">
+                                        <a href="@Url.Action("news", "ControllerName", new { id = blog.Id })">
+                                            @foreach (var imagePath in blog.UploadedImagePaths)
+                                            {
+                                            <img src="@Url.Content(imagePath)" alt="Uploaded Image" />
+                                            }
+                                        </a>
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                <a href="@Url.Action("news", "ControllerName", new { id = blog.Id })">@blog.Title</a>
+                                            </h5>
+                                            <p class="card-text">
+                                                @(blog.Content?.Length > 100
+                                                    ? blog.Content.Substring(0, 100) + "..."
+                                                    : blog.Content)
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
+                            }
+                        </div>
                     }
-                    </div>
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <p>Không có bài viết nào để hiển thị.</p>
+                            </div>
+                        </div>
+                    }
                 </div>
             </section>
         </main>
     </div>
 </div>
-

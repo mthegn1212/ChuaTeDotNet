@@ -9965,3 +9965,13 @@ textarea.form-control {
     height: 400px; 
     object-fit: cover;
 }
+.address-group {
+  display: flex;
+  gap: 1rem; /* Khoảng cách giữa các phần tử */
+  flex-wrap: wrap; /* Đảm bảo xuống hàng nếu không đủ không gian */
+}
+
+.address-group .form-group {
+  flex: 1; /* Chia đều chiều rộng */
+  min-width: 250px; /* Chiều rộng tối thiểu */
+}

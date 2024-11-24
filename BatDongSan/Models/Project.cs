@@ -11,8 +11,8 @@
         public bool Hide { get; set; }
         public int Order { get; set; }
         public int Type {  get; set; }
-        public string locate { get; set; }
-        public int price {  get; set; }
+        public string Locate { get; set; }
+        public double Price {  get; set; }
         public string Area { get; set; }
         public DateTime DateUp { get; set; }
     }

@@ -24,6 +24,11 @@ namespace BatDongSan.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (TempData["ErrorMessage"] != null)
+            {
+                ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            }
+            
             var menuItem = _menuService.GetMenuItems();
             ViewBag.MenuItems = _menuService.GetMenuItems() ?? new List<MenuItem>();
             return View("SignIn");
@@ -56,6 +61,7 @@ namespace BatDongSan.Controllers
 
             // Đăng nhập thành công, lưu thông tin người dùng vào Session
             HttpContext.Session.SetString("UserName", user.UserName);
+            HttpContext.Session.SetString("Role", user.Role);
             HttpContext.Session.SetInt32("UserId", user.Id);
 
             // Lưu menu items vào TempData
@@ -96,12 +102,13 @@ namespace BatDongSan.Controllers
             // Tạo người dùng mới
             var hashedPassword = PasswordHelper.HashPassword(model.Password);
 
-            var user = new User
+            var user = new Users
             {
                 UserName = model.UserName,
                 Email = model.Email,
-                Password = hashedPassword, // Lưu mật khẩu đã mã hóa
-                CreatedAt = DateTime.Now
+                Password = hashedPassword,
+                CreatedAt = DateTime.Now,
+                Role = "normal"
             };
 
             _context.Users.Add(user);
@@ -109,6 +116,7 @@ namespace BatDongSan.Controllers
 
             // Sau khi đăng ký thành công, đăng nhập người dùng
             HttpContext.Session.SetString("UserName", user.UserName);
+            HttpContext.Session.SetString("Role", user.Role);
             HttpContext.Session.SetInt32("UserId", user.Id);
 
             return RedirectToAction("Index", "Home"); // Chuyển hướng đến trang chính

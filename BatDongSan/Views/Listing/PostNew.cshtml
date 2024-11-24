@@ -1,6 +1,6 @@
 ﻿@{
-    ViewData["Title"] = "Đăng Tin";
-    Layout = "_Layout1";
+ViewData["Title"] = "Đăng Tin";
+Layout = "_Layout1";
 }
 <div class="ftco-section">
     <div class="container">
@@ -9,66 +9,71 @@
                 <h5 class="mb-0" style="color:white">Thông tin địa chỉ</h5>
             </div>
             <div class="card-body">
-                <form id="form1" action="@Url.Action("Preview","Listing")">
+                <form id="form1" action="@Url.Action("PostNews", "News")" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+
                     <div class="mb-4">
-                        <label for="tinhThanh" class="form-label">Tỉnh/Thành</label>
-                        <select class="form-control custom-select" id="tinhThanh" required>
-                            <option selected>Hồ Chí Minh</option>
-                        </select>
+                        <label for="tenbaidang" class="form-label">Tên bài đăng</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="tenbaidang" name="Title" required>
+                        </div>
                     </div>
+
+                    <div class="mb-4 address-group">
+                        <div class="form-group">
+                            <label for="tinhThanh" class="form-label">Tỉnh/Thành phố</label>
+                            <select class="form-select" id="tinhThanh" name="City" required onchange="loadQuanHuyen()">
+                                <option value="" disabled selected>Chọn Tỉnh/Thành phố</option>
+                                <!-- Thêm các tùy chọn Tỉnh/Thành phố -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quanHuyen" class="form-label">Quận/Huyện</label>
+                            <select class="form-select" id="quanHuyen" name="District" required onchange="loadXaPhuong()">
+                                <option value="" disabled selected>Chọn Quận/Huyện</option>
+                                <!-- Thêm các tùy chọn Quận/Huyện -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="xaPhuong" class="form-label">Xã/Phường</label>
+                            <select class="form-select" id="xaPhuong" name="Ward" required>
+                                <option value="" disabled selected>Chọn Xã/Phường/Thị trấn</option>
+                                <!-- Thêm các tùy chọn Xã/Phường -->
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="mb-4">
-                        <label for="quanHuyen" class="form-label">Quận/Huyện</label>
-                        <select class="form-control custom-select" id="quanHuyen" required>
-                            <option selected>Gò Vấp</option>
-                        </select>
+                        <label for="diaChiCuThe" class="form-label">Địa chỉ cụ thể</label>
+                        <input type="text" class="form-control" id="diaChiCuThe" name="SpecificAddress" placeholder="Nhập số nhà, tên đường..." required>
                     </div>
-                    <div class="mb-4">
-                        <label for="phuongXa" class="form-label">Phường/Xã</label>
-                        <select class="form-control custom-select" id="phuongXa" required>
-                            <option selected>Phường 15</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="duongPho" class="form-label">Đường/Phố (không bắt buộc)</label>
-                        <select class="form-control custom-select" id="duongPho">
-                            <option selected>Đường 2</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="duAn" class="form-label">Dự án (không bắt buộc)</label>
-                        <select class="form-control custom-select" id="duAn">
-                            <option selected>Phú Gia Hưng Apartment</option>
-                        </select>
-                    </div>
-                    <div class="d-flex justify-content-end ">
-                        <button type="button" class="align-items-center btn btn-primary" id="tiepTuc1">Tiếp tục</button>
-                    </div>
-                    <div id="form2" class="d-none">
+
+                    <!-- Các thông tin khác -->
+                    <div id="form2">
                         <div class="mb-4">
-                            <label for="loaiBDS" class="form-label">Loại BDS</label>
-                            <select class="form-select custom-select" id="loaiBDS" required>
-                                    <option selected>Loại BDS khác</option>
-                                </select>
+                            <label for="loaiBDS" class="form-label">Loại BĐS</label>
+                            <select class="form-select custom-select" id="loaiBDS" name="PropertyType" required>
+                                <option selected>Loại BĐS khác</option>
+                            </select>
                         </div>
                         <div class="mb-4">
                             <label for="dienTich" class="form-label">Diện tích</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="dienTich" required>
+                                <input type="text" class="form-control" id="dienTich" name="Area" required>
                                 <span class="input-group-text">m²</span>
                             </div>
                         </div>
                         <div class="mb-4">
                             <label for="mucGia" class="form-label">Mức giá</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="mucGia" required>
+                                <input type="text" class="form-control" id="mucGia" name="Price" required>
                                 <span class="input-group-text">VND/m²</span>
                             </div>
                         </div>
                         <div class="mb-4">
                             <label for="moTa" class="form-label">Mô tả</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="moTa" required>
-                                
+                                <input type="text" class="form-control" id="moTa" name="Description" required>
                             </div>
                         </div>
                         <div class="mb-4">
@@ -76,7 +81,7 @@
                             <input type="file" class="form-control" id="uploadAnh" accept="image/*" multiple>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary" id="tiepTuc2">Xác Nhận</button>
+                            <button type="submit" class="btn btn-primary" id="tiepTuc2">Đăng tin</button>
                         </div>
                         <div id="previewImages" class="d-flex flex-wrap"></div>
                     </div>
@@ -85,3 +90,64 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Hàm để tải danh sách Tỉnh/Thành phố
+    function loadTinhTp() {
+        fetch('/api/location/tinh_tp')
+            .then(response => response.json())
+            .then(data => {
+                const tinhTpSelect = document.getElementById('tinhThanh');
+                tinhTpSelect.innerHTML = '<option value="" disabled selected>Chọn Tỉnh/Thành phố</option>';
+                for (const key in data) {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = data[key].name;
+                    tinhTpSelect.appendChild(option);
+                }
+            });
+    }
+
+    // Hàm để tải danh sách Quận/Huyện theo Tỉnh/Thành phố
+    function loadQuanHuyen() {
+        const tinhId = document.getElementById('tinhThanh').value;
+        if (!tinhId) return;
+
+        fetch(`/api/location/quan_huyen?tinh_id=${tinhId}`)
+            .then(response => response.json())
+            .then(data => {
+                const quanHuyenSelect = document.getElementById('quanHuyen');
+                quanHuyenSelect.innerHTML = '<option value="" disabled selected>Chọn Quận/Huyện</option>';
+                for (const key in data) {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = data[key].name;
+                    quanHuyenSelect.appendChild(option);
+                }
+            });
+    }
+
+    // Hàm để tải danh sách Xã/Phường theo Quận/Huyện
+    function loadXaPhuong() {
+        const quanId = document.getElementById('quanHuyen').value;
+        if (!quanId) return;
+
+        fetch(`/api/location/xa_phuong?quan_id=${quanId}`)
+            .then(response => response.json())
+            .then(data => {
+                const xaPhuongSelect = document.getElementById('xaPhuong');
+                xaPhuongSelect.innerHTML = '<option value="" disabled selected>Chọn Xã/Phường</option>';
+                for (const key in data) {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = data[key].name;
+                    xaPhuongSelect.appendChild(option);
+                }
+            });
+    }
+
+    // Gọi hàm loadTinhTp khi trang được tải
+    window.onload = function() {
+        loadTinhTp();
+    };
+</script>

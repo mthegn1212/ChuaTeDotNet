@@ -64,7 +64,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 1,
-                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7255),
+                            DateBegin = new DateTime(2024, 11, 24, 13, 28, 7, 279, DateTimeKind.Local).AddTicks(2290),
                             Hide = false,
                             Link = "/RentListing",
                             MenuItemId = 2,
@@ -75,7 +75,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 2,
-                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7257),
+                            DateBegin = new DateTime(2024, 11, 24, 13, 28, 7, 279, DateTimeKind.Local).AddTicks(2292),
                             Hide = false,
                             Link = "/SaleListing",
                             MenuItemId = 2,
@@ -122,7 +122,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 1,
-                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7085),
+                            DateBegin = new DateTime(2024, 11, 24, 13, 28, 7, 279, DateTimeKind.Local).AddTicks(2169),
                             Hide = false,
                             Link = "/",
                             Meta = "home",
@@ -132,7 +132,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 2,
-                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7098),
+                            DateBegin = new DateTime(2024, 11, 24, 13, 28, 7, 279, DateTimeKind.Local).AddTicks(2180),
                             Hide = false,
                             Link = "/listing",
                             Meta = "listing",
@@ -142,7 +142,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 3,
-                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7100),
+                            DateBegin = new DateTime(2024, 11, 24, 13, 28, 7, 279, DateTimeKind.Local).AddTicks(2182),
                             Hide = false,
                             Link = "/news",
                             Meta = "news",
@@ -152,7 +152,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 4,
-                            DateBegin = new DateTime(2024, 11, 20, 11, 37, 48, 952, DateTimeKind.Local).AddTicks(7101),
+                            DateBegin = new DateTime(2024, 11, 24, 13, 28, 7, 279, DateTimeKind.Local).AddTicks(2183),
                             Hide = false,
                             Link = "/PostNew",
                             Meta = "Post-New",
@@ -169,19 +169,34 @@ namespace BatDongSan.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double>("Area")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ContactInfo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("DateUp")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FeaturedImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Hide")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Img")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Link")
                         .IsRequired()
@@ -191,12 +206,31 @@ namespace BatDongSan.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PropertyType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UploadedImagePaths")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ward")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -233,6 +267,10 @@ namespace BatDongSan.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Locate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Meta")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -244,22 +282,52 @@ namespace BatDongSan.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
                     b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<string>("locate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("price")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Projects");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Area = "80m²",
+                            DateUp = new DateTime(2024, 11, 24, 13, 28, 7, 279, DateTimeKind.Local).AddTicks(2316),
+                            Description = "A modern apartment complex",
+                            Hide = false,
+                            Img = "/images/phugia.jpg",
+                            Link = "/project/phugia",
+                            Locate = "Hồ Chí Minh",
+                            Meta = "phugia",
+                            Name = "hú Gia Hưng ApartmentP",
+                            Order = 1,
+                            Price = 1000000000.0,
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Area = "100m²",
+                            DateUp = new DateTime(2024, 11, 24, 13, 28, 7, 279, DateTimeKind.Local).AddTicks(2318),
+                            Description = "A luxury residential tower",
+                            Hide = false,
+                            Img = "/images/laclongquan.jpg",
+                            Link = "/project/laclongquan",
+                            Locate = "Hà Nội",
+                            Meta = "laclongquan",
+                            Name = "Lạc Long Quân Tower",
+                            Order = 2,
+                            Price = 2000000000.0,
+                            Type = 2
+                        });
                 });
 
-            modelBuilder.Entity("BatDongSan.Models.User", b =>
+            modelBuilder.Entity("BatDongSan.Models.Users", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -275,6 +343,10 @@ namespace BatDongSan.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
