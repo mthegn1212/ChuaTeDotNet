@@ -53,7 +53,7 @@
 							{
 								<a href="@Url.Action("Details", "Listing", new { id = pro.Id })" class="item col-md-6" style="text-decoration: none; color: inherit;">
 									<div class="properties ftco-animate">
-										<img src="@Url.Content("~/images/" + pro.Img)" style="display: block; height: 300px; width: 100%;" alt="Colorlib Template">
+										<img src="@Url.Content("~/images/")" style="display: block; height: 300px; width: 100%;" alt="Colorlib Template">
 										<div class="desc">
 											<div class="d-flex pt-5">
 												<div>
@@ -61,10 +61,10 @@
 												</div>
 											</div>
 											<div class="pr-md-3">
-												<span class="price" style="align-items:flex-start">$@pro.price VNĐ - @pro.Area m&sup2;</span>
+												<span class="price" style="align-items:flex-start">$@pro.Price VNĐ - @pro.Area m&sup2;</span>
 												<span class="h-info pr-1">
 													<span><i class="fas fa-map-marker-alt m-1"></i></span>
-													<span class="location" style="color: black">@pro.locate</span>
+													<span class="location" style="color: black">@pro.Locate</span>
 												</span>
 											</div>
 											<span>

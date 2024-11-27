@@ -20,6 +20,19 @@ namespace BatDongSan.Controllers
             _context = context;
         }
         
+        [HttpGet]
+        public IActionResult SignIn()
+        {
+            if (TempData["ErrorMessage"] != null)
+            {
+                ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            }
+            
+            var menuItem = _menuService.GetMenuItems();
+            ViewBag.MenuItems = _menuService.GetMenuItems() ?? new List<MenuItem>();
+            return View();
+        }
+        
         // Hiển thị trang đăng nhập
         [HttpGet]
         public IActionResult Login()
@@ -71,6 +84,14 @@ namespace BatDongSan.Controllers
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             });
 
+            // Kiểm tra vai trò của người dùng
+            if (user.Role.Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                // Chuyển hướng đến khu vực admin
+                return RedirectToAction("Index", "AdminHome", new { area = "Admin" });
+            }
+
+            // Chuyển hướng đến trang chính cho người dùng thông thường
             return RedirectToAction("Index", "Home");
         }
 
@@ -89,7 +110,7 @@ namespace BatDongSan.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("SignUp"); // Trả lại view với thông báo lỗi
+                return View("SignUp");
             }
 
             // Kiểm tra email đã tồn tại hay chưa
@@ -119,7 +140,7 @@ namespace BatDongSan.Controllers
             HttpContext.Session.SetString("Role", user.Role);
             HttpContext.Session.SetInt32("UserId", user.Id);
 
-            return RedirectToAction("Index", "Home"); // Chuyển hướng đến trang chính
+            return RedirectToAction("Index", "Home");
         }
 
         // Xử lý đăng xuất

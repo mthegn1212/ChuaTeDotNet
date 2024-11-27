@@ -1,5 +1,7 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿﻿@{
+
+ViewData["Title"] = "Home Page";
+Layout = "~/Views/Shared/_Layout1.cshtml";
 }
 <div style="background-image: url('@Url.Content("~/images/bg_2.jpg")'); background-size: 100%; background-repeat: no-repeat;">
     <div class="container">
@@ -33,7 +35,7 @@
         </main>
     </div>
 </div>
-<section class="locations-section py-5 " >
+<section class="locations-section py-5 ">
     <div class="container">
         <h2 class="text-left mb-5">Bất động sản theo địa điểm</h2>
         <div class="row">
@@ -53,7 +55,7 @@
             </div>
             <div class="col-md-4 mb-4">
                 <div class="location-card" style="background-image: url('@Url.Content("~/images/DN.jpg")')">
-                    
+
                     <h3>Đà Nẵng</h3>
                     <p>8,214 tin đăng</p>
                 </div>
@@ -67,48 +69,48 @@
         <div class="col-md-12">
             <div class="carousel-properties owl-carousel">
                 @{
-                    foreach (var pro in ViewBag.Top4Projects)
-                    {
-                        <div class="item">
-                            <div class="properties ftco-animate">
-                                <div class="img">
-                                    <a href="@Url.Action("Details", "Listing", new { id = pro.Id })">
-                                        <img src="@Url.Content("~/images/" + pro.Img)" class="img-fluid" alt="Colorlib Template">
-                                    </a>
-                                </div>
-                                <div class="desc">
-                                    <div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
+                foreach (var pro in ViewBag.Top4Projects)
+                {
+                <div class="item">
+                    <div class="properties ftco-animate">
+                        <div class="img">
+                            <a href="@Url.Action("Details", "Listing", new { id = pro.Id })">
+                                <img src="@Url.Content("~/images/" + pro.UploadedImagePaths)" class="img-fluid" alt="Colorlib Template">
+                            </a>
+                        </div>
+                        <div class="desc">
+                            <div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
                                         <span>
                                             @if (pro.Type == 0)
                                             {
-                                                @:Rent
+                                            @:Rent
                                             }
                                             else if (pro.Type == 1)
                                             {
-                                                @:Sale
+                                            @:Sale
                                             }
                                         </span>
-                                    </div>
-                                    <div class="d-flex pt-5">
-                                        <div>
-                                            <h3><a href="@Url.Action("Details", "Listing", new { id = pro.Id })">@pro.Name</a></h3>
-                                        </div>
-
-                                    </div>
-                                    <div>
-                                        <p>@pro.Description</p>
-                                    </div>
-                                    <div class="pl-md-3" style="padding: 0px">
-                                        <p class="price" style="align-items:flex-start">$ @pro.Price - @pro.Area m&sup2;</p>  <!-- Correct property name -->
-                                    </div>
-                                    <p class="h-info">
-                                        <span><i class="fas fa-map-marker-alt m-1"></i></span>
-                                        <span class="location">@pro.Locate</span>
-                                    </p>
-                                </div>
                             </div>
+                            <div class="d-flex pt-5">
+                                <div>
+                                    <h3><a href="@Url.Action("Details", "Listing", new { id = pro.Id })">@pro.Name</a></h3>
+                                </div>
+
+                            </div>
+                            <div>
+                                <p>@pro.Description</p>
+                            </div>
+                            <div class="pl-md-3" style="padding: 0px">
+                                <p class="price" style="align-items:flex-start">$ @pro.Price - @pro.Area m&sup2;</p>  <!-- Correct property name -->
+                            </div>
+                            <p class="h-info">
+                                <span><i class="fas fa-map-marker-alt m-1"></i></span>
+                                <span class="location">@pro.Locate</span>
+                            </p>
                         </div>
-                    }
+                    </div>
+                </div>
+                }
                 }
             </div>
         </div>
@@ -119,20 +121,20 @@
         <h2 class="text-left mb-5">Tin tức bất động sản</h2>
         <div class="row">
             @{
-                @foreach (var blog in ViewBag.Top4News)
-                {
-                    <div class="col-md-3 col-lg-3 d-flex ftco-animate">
-                        <div class="blog-entry ">
-                            <a href="@Url.Action("news", new { id = blog.Meta })">
-                                <img class="img-fluid" src="@Url.Content("~/images/" + blog.Img)">
-                            </a>
-                            <div class="text float-right d-block">
-                                <h3 class="heading"><a href="@Url.Action("news", new { id = blog.Id })">@blog.Name</a></h3>
-                                <p>@blog.Description</p>
-                            </div>
-                        </div>
+            @foreach (var blog in ViewBag.Top4News)
+            {
+            <div class="col-md-3 col-lg-3 d-flex ftco-animate">
+                <div class="blog-entry ">
+                    <a href="@Url.Action("news", new { id = blog.Meta })">
+                        <img class="img-fluid" src="@Url.Content("~/images/" + blog.Img)">
+                    </a>
+                    <div class="text float-right d-block">
+                        <h3 class="heading"><a href="@Url.Action("news", new { id = blog.Id })">@blog.Name</a></h3>
+                        <p>@blog.Description</p>
                     </div>
-                }
+                </div>
+            </div>
+            }
             }
         </div>
     </div>

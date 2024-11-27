@@ -7,8 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Thêm các dịch vụ vào container.
 builder.Services.AddScoped<MenuService>();
-builder.Services.AddScoped<NewsService>(); // Đăng ký NewsService
-builder.Services.AddScoped<ProjectService>(); // Đăng ký ProjectService
+builder.Services.AddScoped<NewsService>();
+builder.Services.AddScoped<ProjectService>();
 
 // Thêm DbContext
 builder.Services.AddDbContext<MyDbContext>(options =>
@@ -19,19 +19,19 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<MyDbContext>()
     .AddDefaultTokenProviders();
 
-// Add Razor Pages service (fix for the error)
-builder.Services.AddRazorPages(); // This is necessary for Razor Pages to work
+// Thêm Razor Pages (nếu sử dụng)
+builder.Services.AddRazorPages();
 
-// Add session and distributed memory cache for session management
-builder.Services.AddDistributedMemoryCache(); // For session state
+// Thêm session và distributed memory cache
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set thời gian hết hạn session
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
 
-// Add MVC controllers and views
+// Thêm MVC controllers và views
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -45,37 +45,32 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseSession(); // Important for session state
+
+app.UseSession();
 
 app.UseRouting();
 
-// Add authentication and authorization middleware
-app.UseAuthentication(); // Add authentication middleware
-app.UseAuthorization();  // Add authorization middleware
+// Thêm middleware authentication và authorization
+app.UseAuthentication();
+app.UseAuthorization();
 
-// Thêm routing cho listing
+// Định nghĩa routing
+// Route cho Areas
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=AdminHome}/{action=Index}/{id?}");
+
+// Route cho các chức năng cụ thể
 app.MapControllerRoute(
     name: "listing",
     pattern: "listing",
     defaults: new { controller = "Listing", action = "Index" });
-app.MapControllerRoute(
-    name: "news-create",
-    pattern: "news/create",
-    defaults: new { controller = "News", action = "Create" }
-);
 
-// Thêm routing cho about
 app.MapControllerRoute(
-    name: "PostNew",
-    pattern: "PostNew",
+    name: "postNew",
+    pattern: "postNew",
     defaults: new { controller = "Listing", action = "PostNew" });
 
-// Route mặc định
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-// Route cho tin tức
 app.MapControllerRoute(
     name: "news",
     pattern: "news",
@@ -83,11 +78,15 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "signIn",
-    pattern: "SignIn",
+    pattern: "signIn",
     defaults: new { controller = "SignIn", action = "Login" });
 
-// Ensure Razor Pages service is added
-app.MapRazorPages(); // This will map Razor Pages if you're using them
+// Route mặc định
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Map Razor Pages (nếu có sử dụng)
+app.MapRazorPages();
 
 app.Run();
-

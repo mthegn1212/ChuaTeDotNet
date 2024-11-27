@@ -32,7 +32,7 @@ namespace BatDongSan.Services
         }
         public List<Project> GetRentPro()
         {
-            return _context.Projects
+            return _context.Projects	
                 .Where(m => !m.Hide && m.Type == 0) 
                 .OrderBy(m => m.Order)
                 .ToList();
@@ -47,7 +47,7 @@ namespace BatDongSan.Services
         public Project find(int id)
         {
             return _context.Projects
-				.FirstOrDefault(m => m.Id == id);
-		}
+                .FirstOrDefault(m => m.Id == id);
+        }
     }
 }

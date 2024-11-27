@@ -1,19 +1,7 @@
-﻿$("#dienTich, #mucGia").on("input", function () {
-	this.value = this.value.replace(/[^0-9]/g, "");
-	if (this.value.length > 3) {
-		var tmp = "";
-		for (var i = this.value.length - 1; i >= 0; i--) {
-			if ((this.value.length - i - 1) % 3 == 0 && i != this.value.length-1) {
-				tmp = "." + tmp;
-			}
-			tmp = this.value.charAt(i) + tmp;
-		}
-		this.value = tmp;
-	}
-});
+﻿
 $("#tiepTuc1").on("click", function () {
-	$("#form2").removeClass("d-none");  
-	$(this).addClass("d-none");         
+    $("#form2").removeClass("d-none");
+    $(this).addClass("d-none");
 });
 $(document).ready(function () {
     $('#uploadAnh').on('change', function () {

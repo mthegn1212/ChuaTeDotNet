@@ -1,0 +1,39 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Trang quản trị";
+}
+
+<div class="container mt-5">
+    <h1>Chào mừng Admin!</h1>
+    <p>Chọn chức năng từ menu bên trái hoặc xem thông tin tổng quan bên dưới:</p>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Quản lý Menu</h5>
+                    <p class="card-text">Chỉnh sửa và sắp xếp các menu trong hệ thống.</p>
+                    <a asp-controller="Menu" asp-action="Index" class="btn btn-light">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Quản lý News</h5>
+                    <p class="card-text">Thêm, sửa, xóa và hiển thị các bài viết.</p>
+                    <a asp-controller="News" asp-action="Index" class="btn btn-light">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Quản lý Header/Footer</h5>
+                    <p class="card-text">Cập nhật nội dung header/footer của website.</p>
+                    <a asp-controller="HeaderFooter" asp-action="Index" class="btn btn-light">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BatDongSan.Models.News>
+
 @{
     ViewData["Title"] = "News";
     Layout = "_Layout1";
@@ -16,15 +17,12 @@
                             {
                                 <div class="col-md-4 mb-4">
                                     <div class="card">
-                                        <a href="@Url.Action("news", "ControllerName", new { id = blog.Id })">
-                                            @foreach (var imagePath in blog.UploadedImagePaths)
-                                            {
-                                            <img src="@Url.Content(imagePath)" alt="Uploaded Image" />
-                                            }
+                                        <a href="@Url.Action("News", "News", new { id = blog.Id })">
+                                            <img src="@Url.Content(blog.ImagePath)" alt="Uploaded Image" style="width: 100%; height: auto;" />
                                         </a>
                                         <div class="card-body">
                                             <h5 class="card-title">
-                                                <a href="@Url.Action("news", "ControllerName", new { id = blog.Id })">@blog.Title</a>
+                                                <a href="@Url.Action("News", "News", new { id = blog.Id })">@blog.Title</a>
                                             </h5>
                                             <p class="card-text">
                                                 @(blog.Content?.Length > 100

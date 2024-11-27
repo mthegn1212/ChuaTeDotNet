@@ -1,0 +1,85 @@
+@model IEnumerable<BatDongSan.Models.News>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Trang quản trị";
+}
+
+<h1>Index</h1>
+
+<p class="text-end">
+    <a href="@Url.Action("Create", "News")" class="btn btn-primary">Create New</a>
+</p>
+<table id="menuTable" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Detail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Link)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Meta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hide)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Order)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateUp)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Detail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImagePath)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Link)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Meta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hide)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Order)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateUp)
+            </td>
+            <td class="table-actions">
+                <a class="delete-link" href="@Url.Action("Edit", "News", new { id = item.Id })">Edit</a> |
+                <a class="delete-link" href="@Url.Action("Details", "News", new { id = item.Id })">Details</a> |
+                <a class="delete-link" href="@Url.Action("Delete", "News", new { id = item.Id })">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<link href="~/css/indexMenu.css" rel="stylesheet" />

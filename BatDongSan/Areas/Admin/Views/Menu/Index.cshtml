@@ -1,0 +1,43 @@
+@model IEnumerable<BatDongSan.Models.MenuItem>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Trang quản trị";
+}
+
+<h1>DANH SÁCH CÁC MENU</h1>
+
+<table id="menuTable" class="table">
+    <thead>
+    <tr>
+        <th onclick="sortTable(0)">Name</th>
+        <th onclick="sortTable(1)">Link</th>
+        <th onclick="sortTable(2)">Meta</th>
+        <th onclick="sortTable(3)">Hide</th>
+        <th onclick="sortTable(4)">Order</th>
+        <th onclick="sortTable(5)">DateBegin</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+    <tr>
+        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+        <td>@Html.DisplayFor(modelItem => item.Link)</td>
+        <td>@Html.DisplayFor(modelItem => item.Meta)</td>
+        <td>@Html.DisplayFor(modelItem => item.Hide)</td>
+        <td>@Html.DisplayFor(modelItem => item.Order)</td>
+        <td>@Html.DisplayFor(modelItem => item.DateBegin)</td>
+        <td class="table-actions">
+            <a class="delete-link" href="@Url.Action("Edit", "Menu", new { id = item.Id })">Edit</a> |
+            <a class="delete-link" href="@Url.Action("Details", "Menu", new { id = item.Id })">Details</a> |
+            <a class="delete-link" href="@Url.Action("Delete", "Menu", new { id = item.Id })">Delete</a>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
+
+<!-- Include the CSS and JS -->
+<link href="~/css/indexMenu.css" rel="stylesheet" />
+<script src="~/js/custom.js"></script>

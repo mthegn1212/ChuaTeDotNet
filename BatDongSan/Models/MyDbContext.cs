@@ -9,7 +9,6 @@ namespace BatDongSan.Models
             : base(options)
         {
         }
-
         public DbSet<MenuItem> MenuItem { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<Project> Projects { get; set; }
