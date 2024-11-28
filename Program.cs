@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using BatDongSan.Services;
 using BatDongSan.Models;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,12 @@ app.UseStaticFiles();
 app.UseSession();
 
 app.UseRouting();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapDefaultControllerRoute();
+});
 
 // Thêm middleware authentication và authorization
 app.UseAuthentication();

@@ -41,8 +41,9 @@ namespace BatDongSan.Models
             Locate = Province + " " + District + " " + Ward + " " + Street;
             UploadedImagePaths = new List<string>();
             Meta = "-" + Id;
-            string formattedName = Name.Replace(" ", "").ToLower();
-            Link = "/project/" + formattedName + upById;
+            //string formattedName = Name.Replace(" ", "").ToLower();
+            //Link = "/project/" + formattedName + upById;
+            Link = "";
         }
     }
 }
