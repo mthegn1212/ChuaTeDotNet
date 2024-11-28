@@ -92,40 +92,34 @@ namespace BatDongSan.Controllers
 
         // POST: Upload images from CKEditor
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile upload)
+        public IActionResult Upload(IFormFile upload)
         {
             if (upload != null && upload.Length > 0)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(upload.FileName);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
-
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", upload.FileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    await upload.CopyToAsync(fileStream);
+                    upload.CopyTo(fileStream);
                 }
-
-                return Json(new { uploaded = true, fileName = fileName, url = "/uploads/" + fileName });
+                return Json(new { uploaded = true, url = "/uploads/" + upload.FileName });
             }
-
-            return Json(new { uploaded = false });
+            return Json(new { uploaded = false, error = "Failed to upload the file." });
         }
 
-        // POST: Create a new project and save it
-        // POST: Create a new project and save it
         [HttpPost]
         public async Task<IActionResult> UpProject(Projects projects, List<IFormFile> uploadedImages)
         {
             // 1. Initialize the ProjectImages list if it's null
             projects.ProjectImages = projects.ProjectImages ?? new List<ProjectImages>();
 
-            // 2. Extract image URLs from Description
+            // 2. Extract image URLs from the Description field (from CKEditor)
             var extractedImageUrls = ExtractImageUrls(projects.Description);
             foreach (var url in extractedImageUrls)
             {
                 projects.ProjectImages.Add(new ProjectImages { ImageUrl = url });
             }
 
-            // 3. Save uploaded images to the server and add to ProjectImages
+            // 3. Save uploaded images from the form to the server and add them to ProjectImages
             if (uploadedImages != null && uploadedImages.Any())
             {
                 foreach (var file in uploadedImages)

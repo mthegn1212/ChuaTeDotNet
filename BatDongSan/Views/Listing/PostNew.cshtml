@@ -76,9 +76,18 @@ Layout = "_Layout1";
                                 <textarea type="text" class="form-control" id="Description" name="Description" required></textarea> 
                             </div>
                         </div>
+                        <!-- Input và Nút chọn hình -->
+                        <div class="mb-4">
+                            <label for="uploadAnh" class="form-label">Tải lên hình ảnh</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="uploadAnh" name="uploadedImages" readonly>
+                                <button type="button" class="btn btn-primary" id="browseImage">Chọn Hình</button>
+                            </div>
+                        </div>
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary" id="tiepTuc2">Đăng tin</button>
                         </div>
+                        <div id="previewImages" class="d-flex flex-wrap"></div>
                     </div>
                 </form>
             </div>
@@ -148,12 +157,28 @@ Layout = "_Layout1";
     };
 
  </script>
- 
  <script src="~/ckeditor/ckeditor.js"></script>
+<script src="~/ckfinder/ckfinder.js"></script>
 <script>
     CKEDITOR.replace('Description', {
-        filebrowserUploadUrl: '/Listing/Upload',
-        filebrowserUploadMethod: 'form'
+        filebrowserBrowseUrl: '/ckeditor/ckeditor.html',  // Đường dẫn tới CKFinder để duyệt file
+        filebrowserUploadUrl: '/Listing/Upload',          // Đường dẫn xử lý tải lên ảnh
+        filebrowserUploadMethod: 'form',                  // Phương thức tải lên
     });
 </script>
-
+<script src="/ckfinder/ckfinder.js"></script>
+<script>
+    document.getElementById('browseImage').addEventListener('click', function () {
+        CKFinder.popup({
+            chooseFiles: true,
+            width: 800,
+            height: 600,
+            onInit: function (finder) {
+                finder.on('files:choose', function (evt) {
+                    var file = evt.data.files.first();
+                    document.getElementById('uploadAnh').value = file.getUrl();
+                });
+            }
+        });
+    });
+</script>
