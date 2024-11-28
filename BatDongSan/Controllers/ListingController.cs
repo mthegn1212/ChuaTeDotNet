@@ -1,7 +1,14 @@
-﻿﻿using Microsoft.AspNetCore.Mvc;
-using BatDongSan.Services;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using BatDongSan.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using BatDongSan.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace BatDongSan.Controllers
 {
@@ -35,17 +42,7 @@ namespace BatDongSan.Controllers
 
             return View("listing", top5Pro);
         }
-        public ActionResult Details(int id)
-        {
-            var menuItems = _menuService.GetMenuItems();
-            ViewBag.MenuItems = menuItems;
-            var project = _projectService.find(id);
-            ViewBag.ProjectById = project;
-            var top5Pro = _projectService.GetTop5();
-            ViewBag.Top5Pro = top5Pro;
 
-            return View("Detail");
-        }
         public IActionResult RentListing()
         {
             var menuItems = _menuService.GetMenuItems();
@@ -57,6 +54,7 @@ namespace BatDongSan.Controllers
 
             return View("RentListing");
         }
+
         public IActionResult SaleListing()
         {
             var menuItems = _menuService.GetMenuItems();
@@ -68,6 +66,8 @@ namespace BatDongSan.Controllers
 
             return View("SaleListing");
         }
+
+        // GET: PostNew (Page for posting a new project)
         public IActionResult PostNew()
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserName")))
@@ -76,84 +76,114 @@ namespace BatDongSan.Controllers
                 return RedirectToAction("Login", "SignIn");
             }
 
-            var model = new Project();
+            var model = new Projects();
 
-            if (TempData["MenuItems"] != null)
-            {
-                var menuItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MenuItem>>(TempData["MenuItems"].ToString());
-                ViewBag.MenuItems = menuItems;
-            }
-            else
-            {
-                var menuItems = _menuService.GetMenuItems();
-                ViewBag.MenuItems = menuItems;
-            }
+            var menuItems = _menuService.GetMenuItems();
+            ViewBag.MenuItems = menuItems;
 
             var salePro = _projectService.GetSalePro();
             ViewBag.SalePro = salePro;
+
             var news = _newService.GetTop4();
             ViewBag.News = news;
 
-            return View("PostNew", model); // Truyền model vào view
+            return View("PostNew", model); // Pass the model to the view
         }
 
-        // Phương thức lưu file vào thư mục wwwroot
-        private async Task<string> SaveFileAsync(IFormFile file)
+        // POST: Upload images from CKEditor
+        [HttpPost]
+        public async Task<IActionResult> Upload(IFormFile upload)
         {
-            try
+            if (upload != null && upload.Length > 0)
             {
-                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
-                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(upload.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    await file.CopyToAsync(fileStream);
+                    await upload.CopyToAsync(fileStream);
                 }
-                return "~/uploads/" + uniqueFileName;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error uploading file: {ex.Message}"); // Thêm log lỗi chi tiết
-                throw new Exception("There was an error uploading the file.", ex); // Đảm bảo ném lỗi để biết nguyên nhân
+
+                return Json(new { uploaded = true, fileName = fileName, url = "/uploads/" + fileName });
             }
 
+            return Json(new { uploaded = false });
         }
 
-
-        // POST: News/Create
+        // POST: Create a new project and save it
+        // POST: Create a new project and save it
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [HttpPost]
-        public async Task<IActionResult> UpProject([Bind("Name,Description,Hide,Order,Type,Price,Area")] Project project)
+        public async Task<IActionResult> UpProject(Projects projects, List<IFormFile> uploadedImages)
         {
-            if (ModelState.IsValid)
+            // 1. Initialize the ProjectImages list if it's null
+            projects.ProjectImages = projects.ProjectImages ?? new List<ProjectImages>();
+
+            // 2. Extract image URLs from Description
+            var extractedImageUrls = ExtractImageUrls(projects.Description);
+            foreach (var url in extractedImageUrls)
             {
-                //foreach ( var img in imgs)
-                //{
-                //	string nameimg = await SaveFileAsync(img);
-                //	project.UploadedImagePaths.Add(nameimg);
-                //}
-                project.upById = HttpContext.Session.GetInt32("Id") ?? 0;
-                _context.Add(project);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                projects.ProjectImages.Add(new ProjectImages { ImageUrl = url });
             }
-            else
+
+            // 3. Save uploaded images to the server and add to ProjectImages
+            if (uploadedImages != null && uploadedImages.Any())
             {
-                var errors = ModelState
-                    .Where(ms => ms.Value.Errors.Any())
-                    .ToDictionary(
-                        kvp => kvp.Key,
-                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
-                    );
-                return BadRequest(errors);
+                foreach (var file in uploadedImages)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    projects.ProjectImages.Add(new ProjectImages { ImageUrl = "/uploads/" + fileName });
+                }
             }
+
+            // 4. Clean the Description (remove image tags if necessary)
+            projects.Description = Regex.Replace(projects.Description, @"<img [^>]*src=""([^""]+)""[^>]*>", "");
+
+            // 5. Save the project to the database
+            _context.Projects.Add(projects);
+            await _context.SaveChangesAsync();
+
+            // 6. Save ProjectImage entries
+            foreach (var projectImage in projects.ProjectImages)
+            {
+                projectImage.ProjectId = projects.Id; // Make sure the ProjectId is set
+                _context.ProjectImages.Add(projectImage); // Do NOT set the 'Id' here
+            }
+            await _context.SaveChangesAsync(); // This will insert the images with auto-generated IDs
+
+            // 7. Redirect to the Details page for the newly created project
+            return RedirectToAction("Details", new { id = projects.Id });
+        }
+
+        // GET: Details of a project
+        public ActionResult Details(int id)
+        {
+            var menuItems = _menuService.GetMenuItems();
+            ViewBag.MenuItems = menuItems;
+
+            var project = _projectService.GetProjectDetail(id);
+            return View("Index");
+        }
+
+        // Extract image URLs from HTML content
+        private List<string> ExtractImageUrls(string htmlContent)
+        {
+            var urls = new List<string>();
+            var matchCollection = Regex.Matches(htmlContent, @"<img [^>]*src=""([^""]+)""[^>]*>");
+            foreach (Match match in matchCollection)
+            {
+                if (match.Groups.Count > 1)
+                {
+                    urls.Add(match.Groups[1].Value);
+                }
+            }
+            return urls;
         }
     }
 }

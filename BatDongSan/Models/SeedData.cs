@@ -20,38 +20,6 @@ namespace BatDongSan.Models
                 new ChildMenus { Id = 2, Name = "SaleListing", Link = "/SaleListing", Meta = "salelisting", Hide = false, Order = 2, DateBegin = DateTime.Now, MenuItemId = 2 }
             );
 
-            modelBuilder.Entity<Project>().HasData(
-                new Project
-                {
-                    Id = 1,
-                    Name = "Phú Gia Hưng ApartmentP",
-                    Description = "A modern apartment complex",
-                    Link = "/project/phugia",
-                    Meta = "-1",
-                    Hide = false,
-                    Order = 1,
-                    Type = 1,
-                    Locate = "Hồ Chí Minh",
-                    Price = "1.000.000.000",
-                    Area = "80",
-                    DateUp = DateTime.Now
-                },
-                new Project
-                {
-                    Id = 2,
-                    Name = "Lạc Long Quân Tower",
-                    Description = "A luxury residential tower",
-                    Link = "/project/laclongquan",
-                    Meta = "-2",
-                    Hide = false,
-                    Order = 2,
-                    Type = 2,
-                    Locate = "Hà Nội",
-                    Price = "2.000.000.000",
-                    Area = "100",
-                    DateUp = DateTime.Now
-                });
-
             modelBuilder.Entity<News>().HasData(
                 new News
                 {

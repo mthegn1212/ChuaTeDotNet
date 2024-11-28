@@ -11,9 +11,10 @@ namespace BatDongSan.Models
         }
         public DbSet<MenuItem> MenuItem { get; set; }
         public DbSet<News> News { get; set; }
-        public DbSet<Project> Projects { get; set; }
+        public DbSet<Projects> Projects { get; set; }
         public DbSet<Users> Users { get; set; }
 		public DbSet<ChildMenus> ChildMenus { get; set; }
+		public DbSet<ProjectImages> ProjectImages { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

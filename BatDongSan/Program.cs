@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using BatDongSan.Services;
 using BatDongSan.Models;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +54,6 @@ app.UseRouting();
 // Thêm middleware authentication và authorization
 app.UseAuthentication();
 app.UseAuthorization();
-
 // Định nghĩa routing
 // Route cho Areas
 app.MapControllerRoute(

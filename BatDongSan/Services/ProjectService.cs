@@ -1,8 +1,5 @@
 ﻿using BatDongSan.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BatDongSan.Services
 {
@@ -15,14 +12,15 @@ namespace BatDongSan.Services
             _context = context;
         }
 
-        public List<Project> GetAllProject()
+        public List<Projects> GetAllProject()
         {
             return _context.Projects
                 .Where(m => !m.Hide)
                 .OrderBy(m => m.Order)
                 .ToList();
         }
-        public List<Project> GetTop5()
+
+        public List<Projects> GetTop5()
         {
             return _context.Projects
                 .Where(m => !m.Hide)
@@ -30,24 +28,36 @@ namespace BatDongSan.Services
                 .Take(5)
                 .ToList();
         }
-        public List<Project> GetRentPro()
+
+        public List<Projects> GetRentPro()
         {
-            return _context.Projects	
+            return _context.Projects    
                 .Where(m => !m.Hide && m.Type == 0) 
                 .OrderBy(m => m.Order)
                 .ToList();
         }
-        public List<Project> GetSalePro()
+
+        public List<Projects> GetSalePro()
         {
             return _context.Projects
                 .Where(m => !m.Hide && m.Type == 1) 
                 .OrderBy(m => m.Order)
                 .ToList();
         }
-        public Project find(int id)
+
+        public Projects? Find(int id)
         {
             return _context.Projects
-                .FirstOrDefault(m => m.Id == id);
+                .FirstOrDefault(m => m.Id == id && !m.Hide);
+        }
+
+        // Get project detail including images
+        public Projects? GetProjectDetail(int id)
+        {
+            return _context.Projects
+                .Where(m => m.Id == id && !m.Hide)
+                .Include(p => p.ProjectImages)  // Include related ProjectImages
+                .FirstOrDefault();
         }
     }
 }

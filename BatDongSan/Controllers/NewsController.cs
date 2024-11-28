@@ -52,7 +52,7 @@ namespace BatDongSan.Controllers
             }
 
             var newsList = await _context.News.ToListAsync(); // Lấy danh sách bài viết từ database
-            return View("news"); // Truyền danh sách bài viết sang View
+            return View("news", newsList); // Truyền danh sách bài viết sang View
         }
     }
 }
