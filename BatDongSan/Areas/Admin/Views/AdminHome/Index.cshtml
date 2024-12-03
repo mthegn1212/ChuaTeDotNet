@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Quản lý Menu</h5>
                     <p class="card-text">Chỉnh sửa và sắp xếp các menu trong hệ thống.</p>
-                    <a asp-controller="Menu" asp-action="Index" class="btn btn-light">Xem chi tiết</a>
+                    <a href="@Url.Action("ManageMenu")" class="btn btn-light">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -22,11 +22,11 @@
                 <div class="card-body">
                     <h5 class="card-title">Quản lý News</h5>
                     <p class="card-text">Thêm, sửa, xóa và hiển thị các bài viết.</p>
-                    <a asp-controller="News" asp-action="Index" class="btn btn-light">Xem chi tiết</a>
+                    <a href="@Url.Action("ManageNews")" class="btn btn-light">Xem chi tiết</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+    <div class="col-md-4">
             <div class="card text-white bg-warning mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Quản lý Header/Footer</h5>

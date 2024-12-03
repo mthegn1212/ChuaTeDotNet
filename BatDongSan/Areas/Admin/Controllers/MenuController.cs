@@ -78,13 +78,14 @@ namespace BatDongSan.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            return View(menuItem);  // Trả về view Edit với đối tượng MenuItem
+
+            return View(menuItem);
         }
 
-// POST: Admin/Menu/Edit/5
+        // POST: Admin/Menu/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Link,Meta,Hide,Order,DateBegin")] MenuItem menuItem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Link,Meta,Hide")] MenuItem menuItem)
         {
             if (id != menuItem.Id)
             {
@@ -111,7 +112,7 @@ namespace BatDongSan.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));  // Sau khi lưu, quay lại trang Index
             }
-            return View(menuItem);  // Nếu có lỗi, quay lại trang Edit
+            return View("Index"); // Trả lại chính view Edit với dữ liệu lỗi
         }
 
         // GET: Admin/Menu/Delete/5

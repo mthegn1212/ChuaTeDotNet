@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using BatDongSan.Services;
 using BatDongSan.Models;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +33,7 @@ builder.Services.AddSession(options =>
 
 // Thêm MVC controllers và views
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 
@@ -67,9 +67,14 @@ app.MapControllerRoute(
     defaults: new { controller = "Listing", action = "Index" });
 
 app.MapControllerRoute(
-    name: "postNew",
-    pattern: "postNew",
-    defaults: new { controller = "Listing", action = "PostNew" });
+    name: "postProject",
+    pattern: "postProject",
+    defaults: new { controller = "Listing", action = "PostProject" });
+
+app.MapControllerRoute(
+    name: "projectmanagement",
+    pattern: "projectmanagement",
+    defaults: new { controller = "Listing", action = "ProjectManagement" });
 
 app.MapControllerRoute(
     name: "news",
@@ -80,6 +85,13 @@ app.MapControllerRoute(
     name: "signIn",
     pattern: "signIn",
     defaults: new { controller = "SignIn", action = "Login" });
+
+app.MapControllerRoute(
+    name: "detail",
+    pattern: "Listing/Detail/{id}",
+    defaults: new { controller = "Listing", action = "Detail" }
+);
+
 
 // Route mặc định
 app.MapControllerRoute(

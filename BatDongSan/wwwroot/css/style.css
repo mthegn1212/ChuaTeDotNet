@@ -49,6 +49,16 @@ html {
 article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
   display: block; }
 
+.thumbnail-small {
+  max-width: 50px; /* Hoặc kích thước tùy ý */
+  max-height: 50px; /* Hoặc kích thước tùy ý */
+  object-fit: cover; /* Đảm bảo hình ảnh giữ tỷ lệ */
+}
+.thumbnail-big {
+  max-width: 200px; /* Hoặc kích thước tùy ý */
+  max-height: 200px; /* Hoặc kích thước tùy ý */
+  object-fit: cover; /* Đảm bảo hình ảnh giữ tỷ lệ */
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";

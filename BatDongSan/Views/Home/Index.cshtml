@@ -74,8 +74,8 @@ Layout = "~/Views/Shared/_Layout1.cshtml";
                 <div class="item">
                     <div class="properties ftco-animate">
                         <div class="img">
-                            <a href="@Url.Action("Details", "Listing", new { id = pro.Id })">
-                                <img src="@Url.Content("~/uploads/23dc76f7-7215-4298-b1bf-4baba69af2d7.png")" class="img-fluid" alt="Colorlib Template">
+                            <a href="@Url.Action("Detail", "Listing", new { id = pro.Id })">
+                                <img src="@Url.Content("~/uploads/" + pro.Image1)" class="img-fluid thumbnail-big" alt="Colorlib Template">
                             </a>
                         </div>
                         <div class="desc">
@@ -93,7 +93,7 @@ Layout = "~/Views/Shared/_Layout1.cshtml";
                             </div>
                             <div class="d-flex pt-5">
                                 <div>
-                                    <h3><a href="@Url.Action("Details", "Listing", new { id = pro.Id })">@pro.Name</a></h3>
+                                    <h3><a href="@Url.Action("Detail", "Listing", new { id = pro.Id })">@pro.Name</a></h3>
                                 </div>
 
                             </div>
@@ -125,8 +125,8 @@ Layout = "~/Views/Shared/_Layout1.cshtml";
             {
             <div class="col-md-3 col-lg-3 d-flex ftco-animate">
                 <div class="blog-entry ">
-                    <a href="@Url.Action("news", new { id = blog.Meta })">
-                        <img class="img-fluid" src="@Url.Content("~/images/" + blog.ImagePath)">
+                    <a href="@Url.Action("News", "News", new { id = blog.Id })">
+                        <img class="img-fluid" src="@Url.Content("~/images/" + blog.ImagePath)" alt="@blog.Title">
                     </a>
                     <div class="text float-right d-block">
                         <h3 class="heading"><a href="@Url.Action("news", new { id = blog.Id })">@blog.Title</a></h3>

@@ -1,0 +1,58 @@
+@model IEnumerable<BatDongSan.Models.Projects>
+
+@{
+ViewData["Title"] = "Quản lý Dự án";
+Layout = "_Layout1";
+}
+
+<section class="ftco-section">
+    <div class="container">
+        <h2 class="mb-4">Danh sách các Dự án của bạn</h2>
+
+        @if (!Model.Any())
+        {
+        <div class="alert alert-warning" role="alert">
+            Bạn chưa đăng dự án nào.
+        </div>
+        }
+        else
+        {
+        <div class="row">
+            @foreach (var project in Model)
+            {
+            <div class="col-md-4 mb-4">
+                <div class="properties ftco-animate">
+                    <img src="@Url.Content("~/uploads/" + project.Image1)" alt="@project.Name" class="img-fluid" style="height: 300px; object-fit: cover;">
+                    <div class="desc">
+                        <h3>@project.Name</h3>
+                        <span class="price">@project.Price VNĐ - @project.Area m²</span>
+                        <p>@project.Description</p>
+                        <a href="@Url.Action("Detail", "Listing", new { id = project.Id })" class="btn btn-primary">Chi tiết</a>
+                        <a href="@Url.Action("EditProjects", "Listing", new { id = project.Id })" class="btn btn-secondary">Sửa</a>
+                        <a href="javascript:void(0);" class="btn btn-danger" onclick="deleteProject(@project.Id)">Xóa</a>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</section>
+<script>
+    function deleteProject(id) {
+        if (confirm('Are you sure you want to delete this project?')) {
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '@Url.Action("Delete", "Listing")';
+
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'id';
+            input.value = id;
+            form.appendChild(input);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>

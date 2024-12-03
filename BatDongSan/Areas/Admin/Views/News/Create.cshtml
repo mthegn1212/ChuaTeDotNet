@@ -10,7 +10,7 @@
 <h4>News</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -25,12 +25,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Detail" class="control-label">Detail</label>
-                <input asp-for="Detail" class="form-control" />
+                <textarea id="Details" asp-for="Detail" class="form-control"></textarea>
                 <span asp-validation-for="Detail" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ImagePath" class="control-label">Image</label>
-                <input asp-for="ImagePath" class="form-control" />
+                <input type="text" asp-for="ImagePath" class="form-control" />
                 <span asp-validation-for="ImagePath" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -55,7 +55,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateUp" class="control-label">DateUp</label>
-                <input asp-for="DateUp" class="form-control" />
+                <input asp-for="DateUp" class="form-control" value="@Model.DateUp"/>
                 <span asp-validation-for="DateUp" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -68,4 +68,11 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
+<script src="~/ckeditor/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('Details', {
+        filebrowserBrowseUrl: '/ckeditor/ckeditor.html',  // Đường dẫn tới CKFinder
+        filebrowserUploadUrl: '/ckeditor/upload',          // Đường dẫn xử lý tải lên tệp
+        filebrowserUploadMethod: 'form',                    // Phương thức tải lên
+    });
+</script>

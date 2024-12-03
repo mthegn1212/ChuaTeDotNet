@@ -21,6 +21,7 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\AdminHome\" />
+    <Folder Include="Configs\" />
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\data\" />
     <Folder Include="wwwroot\images\" />
@@ -37,6 +38,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Scripts" Version="1.0.0" />
   </ItemGroup>
 
@@ -54,6 +56,12 @@
     <_ContentIncludedByDefault Remove="Areas\Admin\Views\NewsCotroller\Details.cshtml" />
     <_ContentIncludedByDefault Remove="Areas\Admin\Views\NewsCotroller\Edit.cshtml" />
     <_ContentIncludedByDefault Remove="Areas\Admin\Views\NewsCotroller\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CKFinder">
+      <HintPath>wwwroot\ckfinder\bin\Debug\CKFinder.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -12,27 +12,27 @@ namespace BatDongSan.Models
         // Thông tin cơ bản
         [Required(ErrorMessage = "Title is required.")]
         [MaxLength(150, ErrorMessage = "Title cannot be longer than 150 characters.")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [Required(ErrorMessage = "Content is required.")]
-        public string Content { get; set; }
+        public string? Content { get; set; }
         
         [Required(ErrorMessage = "Detail is required.")]
-        public string Detail { get; set; }
+        public string? Detail { get; set; }
         
         // Hình ảnh
         [NotMapped]
-        public IFormFile Images { get; set; }
+        public IFormFile? Images { get; set; }
 
-        public string ImagePath { get; set; }
+        public string? ImagePath { get; set; }
 
         // Metadata
-        public string Link { get; set; }
+        public string? Link { get; set; }
         
-        public string Meta { get; set; }
+        public string? Meta { get; set; }
         
         public bool? Hide { get; set; }
-        public int Order { get; set; }
+        public int? Order { get; set; }
         public DateTime? DateUp { get; set; }
     }
 }

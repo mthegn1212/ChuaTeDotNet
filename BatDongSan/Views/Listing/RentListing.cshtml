@@ -54,9 +54,9 @@ Layout = "_Layout1";
                     {
                     foreach (var pro in ViewBag.RentPro)
                     {
-                    <a href="@Url.Action("Details", "Listing", new { id = pro.Id })" class="item col-md-6" style="text-decoration: none; color: inherit;">
+                    <a href="@Url.Action("Detail", "Listing", new { id = pro.Id })" class="item col-md-6" style="text-decoration: none; color: inherit;">
                         <div class="properties ftco-animate">
-                            <img src="@Url.Content("~" + pro.RepresentativeImage)" style="display: block; height: 300px; width: 100%;" alt="@pro.Name">
+                            <img src="@Url.Content("~/uploads/" + pro.Image1)" style="display: block; height: 300px; width: 100%;" alt="@pro.Name">
                             <div class="desc">
                                 <div class="d-flex pt-5">
                                     <div>

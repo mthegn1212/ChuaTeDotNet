@@ -1,8 +1,8 @@
 @model IEnumerable<BatDongSan.Models.News>
 
 @{
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    ViewData["Title"] = "Trang quản trị";
+Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+ViewData["Title"] = "Trang quản trị";
 }
 
 <h1>Index</h1>
@@ -12,74 +12,84 @@
 </p>
 <table id="menuTable" class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Detail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Link)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Meta)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Hide)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Order)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateUp)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.Title)</th>
+        <th>@Html.DisplayNameFor(model => model.Content)</th>
+        <th>@Html.DisplayNameFor(model => model.Detail)</th>
+        <th>@Html.DisplayNameFor(model => model.ImagePath)</th>
+        <th>@Html.DisplayNameFor(model => model.Link)</th>
+        <th>@Html.DisplayNameFor(model => model.Meta)</th>
+        <th>@Html.DisplayNameFor(model => model.Hide)</th>
+        <th>@Html.DisplayNameFor(model => model.Order)</th>
+        <th>@Html.DisplayNameFor(model => model.DateUp)</th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Detail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Link)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Meta)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Hide)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Order)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateUp)
-            </td>
-            <td class="table-actions">
-                <a class="delete-link" href="@Url.Action("Edit", "News", new { id = item.Id })">Edit</a> |
-                <a class="delete-link" href="@Url.Action("Details", "News", new { id = item.Id })">Details</a> |
-                <a class="delete-link" href="@Url.Action("Delete", "News", new { id = item.Id })">Delete</a>
-            </td>
-        </tr>
-}
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>@Html.DisplayFor(modelItem => item.Title)</td>
+        <td>@Html.DisplayFor(modelItem => item.Content)</td>
+        <td>@Html.DisplayFor(modelItem => item.Detail)</td>
+        <td>@Html.DisplayFor(modelItem => item.ImagePath)</td>
+        <td>@Html.DisplayFor(modelItem => item.Link)</td>
+        <td>@Html.DisplayFor(modelItem => item.Meta)</td>
+        <td>@Html.DisplayFor(modelItem => item.Hide)</td>
+        <td>@Html.DisplayFor(modelItem => item.Order)</td>
+        <td>@Html.DisplayFor(modelItem => item.DateUp)</td>
+        <td class="table-actions">
+            <a class="delete-link" href="javascript:void(0);" data-id="@item.Id">Delete</a> |
+            <a class="edit-link" href="@Url.Action("Edit", "News", new { id = item.Id })">Edit</a> |
+            <a class="details-link" href="@Url.Action("Details", "News", new { id = item.Id })">Details</a>
+        </td>
+    </tr>
+    }
     </tbody>
 </table>
+
+<!-- Confirmation Modal -->
+<div id="confirmationModal" style="display:none;">
+    <p>Are you sure you want to delete this item?</p>
+    <button id="confirmDelete" class="btn btn-danger">Yes</button>
+    <button id="cancelDelete" class="btn btn-secondary">No</button>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Khi người dùng nhấn vào liên kết xóa
+        $('.delete-link').click(function () {
+            var newsId = $(this).data('id'); // Lấy id của mục cần xóa
+
+            // Hiển thị modal xác nhận xóa
+            $('#confirmationModal').show();
+
+            // Khi người dùng nhấn "Yes" (Xác nhận xóa)
+            $('#confirmDelete').click(function () {
+                // Gửi yêu cầu AJAX để xóa mục
+                $.ajax({
+                    url: '@Url.Action("DeleteConfirmed", "News")', // Đường dẫn đến action DeleteConfirmed trong controller
+                    type: 'POST', // Phương thức gửi yêu cầu (POST)
+                    data: { id: newsId }, // Dữ liệu (id của mục cần xóa)
+                    success: function (response) {
+                        if (response.success) {
+                            // Nếu xóa thành công, tải lại trang để cập nhật danh sách
+                            location.reload(); // Reload lại trang
+                        }
+                    },
+                    error: function () {
+                        alert('Error deleting item');
+                    }
+                });
+            });
+
+            // Khi người dùng nhấn "No" (Hủy bỏ xóa)
+            $('#cancelDelete').click(function () {
+                $('#confirmationModal').hide(); // Ẩn modal
+            });
+        });
+    });
+</script>
+
+
 <link href="~/css/indexMenu.css" rel="stylesheet" />

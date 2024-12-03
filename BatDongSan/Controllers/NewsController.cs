@@ -19,10 +19,22 @@ namespace BatDongSan.Controllers
         }
 
         // GET: News/Create
+        // GET: News/Details
+        [Route("Home/news/{id}")]
         [HttpGet]
-        public IActionResult News()
+        public async Task<IActionResult> News(int id)
         {
-            // Kiểm tra nếu MenuItems tồn tại trong TempData
+            // Fetch news details by ID
+            var news = await _context.News
+                .Include(n => n.ImagePath) // Include related entities, if any
+                .FirstOrDefaultAsync(n => n.Id == id);
+
+            if (news == null)
+            {
+                return NotFound(); // Return a 404 error if the news is not found
+            }
+
+            // Populate menu items for the view
             if (TempData["MenuItems"] != null)
             {
                 var menuItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MenuItem>>(TempData["MenuItems"].ToString());
@@ -30,11 +42,12 @@ namespace BatDongSan.Controllers
             }
             else
             {
-                // Nếu không có menu trong TempData, lấy từ dịch vụ
                 var menuItems = _menuService.GetMenuItems();
                 ViewBag.MenuItems = menuItems;
             }
-            return View(); // Return the view to create a new news entry
+
+            ViewBag.NewsDetails = news;
+            return View("news"); // Render the news view
         }
 
         // GET: News/Index
@@ -54,5 +67,7 @@ namespace BatDongSan.Controllers
             var newsList = await _context.News.ToListAsync(); // Lấy danh sách bài viết từ database
             return View("news", newsList); // Truyền danh sách bài viết sang View
         }
+        
+        
     }
 }

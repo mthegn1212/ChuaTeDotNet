@@ -1,0 +1,233 @@
+﻿﻿@{
+ViewData["Title"] = "Đăng Tin";
+Layout = "_Layout1";
+}
+<div class="ftco-section">
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" style="color:white">Thông tin địa chỉ</h5>
+            </div>
+            <div class="card-body">
+                <form id="form1" asp-action="UpProject" asp-controller="Listing" method="post" enctype="multipart/form-data" onsubmit="return handleFormSubmit();">
+
+                    <div class="mb-4"><label for="tenbaidang" class="form-label">Tên bài đăng</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="tenbaidang" name="Name" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 address-group">
+                        <div class="form-group">
+                            <label for="tinhThanh" class="form-label">Tỉnh/Thành phố</label>
+                            <select class="form-select" id="tinhThanh" name="Province" required onchange="loadQuanHuyen()">
+                                <option value="" disabled selected>Chọn Tỉnh/Thành phố</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quanHuyen" class="form-label">Quận/Huyện</label>
+                            <select class="form-select" id="quanHuyen" name="District" required onchange="loadXaPhuong()">
+                                <option value="" disabled selected>Chọn Quận/Huyện</option>
+                                <!-- Thêm các tùy chọn Quận/Huyện -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="xaPhuong" class="form-label">Xã/Phường</label>
+                            <select class="form-select" id="xaPhuong" name="Ward" required>
+                                <option value="" disabled selected>Chọn Xã/Phường/Thị trấn</option>
+                                <!-- Thêm các tùy chọn Xã/Phường -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="diaChiCuThe" class="form-label">Địa chỉ cụ thể</label>
+                        <input type="text" class="form-control" id="diaChiCuThe" name="Street" placeholder="Nhập số nhà, tên đường..." required>
+                    </div>
+                    <input type="hidden" id="Locate" name="Locate" />
+
+                    <!-- Các thông tin khác -->
+                    <div id="form2">
+                        <div class="mb-4">
+                            <label for="loaiBDS" class="form-label">Loại BĐS</label>
+                            <select class="form-select custom-select" id="loaiBDS" name="Type" required>
+                                <option value=0 selected>Cho Thuê</option>
+                                <option value=1>Mua Bán</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="dienTich" class="form-label">Diện tích</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="dienTich" name="Area" required>
+                                <span class="input-group-text">m²</span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="mucGia" class="form-label">Mức giá</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="mucGia" name="Price" required>
+                                <span class="input-group-text">VND/m²</span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Mô tả</label>
+                            <div class="input-group">
+                                <input type="hidden" id="Description" name="Description" value="Default value">
+                            </div>
+                        </div>
+                        <!-- Input và Nút chọn hình -->
+                        <div class="mb-4">
+                            <label for="uploadAnh" class="form-label">Tải lên hình ảnh</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="uploadAnh" name="uploadedImages" multiple>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary" id="tiepTuc2">Đăng tin</button>
+                        </div>
+                        <div id="previewImages" class="d-flex flex-wrap"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script>
+     let provinceData = {}; // Biến toàn cục lưu dữ liệu tỉnh/thành phố
+     let districtData = {}; // Biến toàn cục lưu dữ liệu quận/huyện
+     let wardData = {};     // Biến toàn cục lưu dữ liệu xã/phường
+
+     // Hàm để tải danh sách Tỉnh/Thành phố
+     function loadTinhTp() {
+         fetch('/api/location/tinh_tp')
+             .then(response => response.json())
+             .then(data => {
+                 provinceData = data; // Lưu dữ liệu vào biến toàn cục
+                 const tinhTpSelect = document.getElementById('tinhThanh');
+                 tinhTpSelect.innerHTML = '<option value="" disabled selected>Chọn Tỉnh/Thành phố</option>';
+                 for (const key in data) {
+                     const option = document.createElement('option');
+                     option.value = key;
+                     option.textContent = data[key].name;
+                     tinhTpSelect.appendChild(option);
+                 }
+             });
+     }
+
+     // Hàm để tải danh sách Quận/Huyện theo Tỉnh/Thành phố
+     function loadQuanHuyen() {
+         const tinhId = document.getElementById('tinhThanh').value;
+         if (!tinhId) return;
+
+         fetch(`/api/location/quan_huyen?tinh_id=${tinhId}`)
+             .then(response => response.json())
+             .then(data => {
+                 districtData = data; // Lưu dữ liệu vào biến toàn cục
+                 const quanHuyenSelect = document.getElementById('quanHuyen');
+                 quanHuyenSelect.innerHTML = '<option value="" disabled selected>Chọn Quận/Huyện</option>';
+                 for (const key in data) {
+                     const option = document.createElement('option');
+                     option.value = key;
+                     option.textContent = data[key].name;
+                     quanHuyenSelect.appendChild(option);
+                 }
+             });
+     }
+
+     // Hàm để tải danh sách Xã/Phường theo Quận/Huyện
+     function loadXaPhuong() {
+         const quanId = document.getElementById('quanHuyen').value;
+         if (!quanId) return;
+
+         fetch(`/api/location/xa_phuong?quan_id=${quanId}`)
+             .then(response => response.json())
+             .then(data => {
+                 wardData = data; // Lưu dữ liệu vào biến toàn cục
+                 const xaPhuongSelect = document.getElementById('xaPhuong');
+                 xaPhuongSelect.innerHTML = '<option value="" disabled selected>Chọn Xã/Phường</option>';
+                 for (const key in data) {
+                     const option = document.createElement('option');
+                     option.value = key;
+                     option.textContent = data[key].name;
+                     xaPhuongSelect.appendChild(option);
+                 }
+             });
+     }
+     // Tải danh sách tỉnh/thành phố khi trang tải
+     window.onload = function () {
+         loadTinhTp();
+     };
+    let editorInstance;
+
+    // Cấu hình CKEditor
+    ClassicEditor
+        .create(document.querySelector('#Description'))
+        .then(editor => {
+            editorInstance = editor;
+        })
+        .catch(error => console.error(error));
+
+    // Hàm đồng bộ nội dung CKEditor vào input ẩn
+    function syncDescription() {
+        if (editorInstance) {
+            const descriptionField = document.getElementById('Description');
+            descriptionField.value = editorInstance.getData();
+        }
+    }
+
+    // Hàm lấy địa chỉ đầy đủ
+    function getLocate() {
+        const provinceId = document.getElementById('tinhThanh').value;
+        const districtId = document.getElementById('quanHuyen').value;
+        const wardId = document.getElementById('xaPhuong').value;
+        const street = document.getElementById('diaChiCuThe').value;
+
+        const provinceName = provinceData[provinceId]?.name || '';
+        const districtName = districtData[districtId]?.name || '';
+        const wardName = wardData[wardId]?.name || '';
+
+        // Kết hợp các thành phần thành địa chỉ
+        return [provinceName, districtName, wardName, street].filter(Boolean).join(", ");
+    }
+
+    // Hàm gán địa chỉ vào input ẩn
+    function setLocate() {
+        document.getElementById('Locate').value = getLocate();
+    }
+
+    // Hàm xử lý khi submit form
+    function handleFormSubmit(event) {
+        setLocate(); // Lấy và gán địa chỉ
+        syncDescription(); // Đồng bộ nội dung CKEditor
+        alert('Form is submitting!');
+        return true; // Cho phép gửi form
+    }
+</script>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
+ <script>
+    // CKEditor setup
+    ClassicEditor
+        .create(document.querySelector('#Description'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+ 
+ <script>
+     function handleFormSubmit() {
+         // Gọi hàm để đặt giá trị địa chỉ
+         setLocate();
+
+         // Gọi hàm để đồng bộ dữ liệu CKEditor
+         syncDescription();
+
+         // Hiển thị thông báo (nếu cần)
+         alert('Form is submitting!');
+
+         // Trả về true để cho phép gửi form
+         return true;
+     }
+ </script>
+

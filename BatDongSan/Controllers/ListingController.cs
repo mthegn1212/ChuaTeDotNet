@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using BatDongSan.Models;
 using BatDongSan.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using System.Text;
 
 namespace BatDongSan.Controllers
 {
@@ -18,10 +13,13 @@ namespace BatDongSan.Controllers
         private readonly ProjectService _projectService;
         private readonly NewsService _newService;
         private readonly MyDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ListingController(MenuService menuService, ProjectService projectService, NewsService newService, MyDbContext context)
+        public ListingController(MenuService menuService, ProjectService projectService, NewsService newService, MyDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _menuService = menuService;
+            _webHostEnvironment = webHostEnvironment;
+
             _projectService = projectService;
             _newService = newService;
             _context = context;
@@ -66,15 +64,29 @@ namespace BatDongSan.Controllers
 
             return View("SaleListing");
         }
+        
+        public IActionResult Listing()
+        {
+            var menuItems = _menuService.GetMenuItems();
+            ViewBag.MenuItems = menuItems;
+            var salePro = _projectService.GetSalePro();
+            ViewBag.SalePro = salePro;
+            var news = _newService.GetTop4();
+            ViewBag.News = news;
+
+            return View();
+        }
 
         // GET: PostNew (Page for posting a new project)
-        public IActionResult PostNew()
+        public IActionResult PostProject()
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserName")))
             {
                 TempData["ErrorMessage"] = "Bạn cần đăng nhập để truy cập trang này.";
                 return RedirectToAction("Login", "SignIn");
             }
+            string filePath1 = Path.Combine(_webHostEnvironment.WebRootPath, "data", "quan_huyen.json");
+                        Console.WriteLine(filePath1);
 
             var model = new Projects();
 
@@ -87,72 +99,244 @@ namespace BatDongSan.Controllers
             var news = _newService.GetTop4();
             ViewBag.News = news;
 
-            return View("PostNew", model); // Pass the model to the view
+            return View("PostProject", model); // Pass the model to the view
+        }
+        
+        // GET: ManageProject
+        public IActionResult ProjectManagement()
+        {
+            // Get the user ID from session
+            int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
+
+            if (userId == 0)
+            {
+                // If the user is not logged in or session is invalid, redirect to login
+                return RedirectToAction("Login", "SignIn");
+            }
+            var menuItems = _menuService.GetMenuItems();
+            ViewBag.MenuItems = menuItems;
+            // Fetch all projects where UpById matches the UserId
+            var userProjects = _context.Projects.Where(p => p.upById == userId).ToList();
+
+            // Pass the projects to the view
+            return View(userProjects);
+        }
+
+        
+        // GET: ManageProject/Edit/5
+        public async Task<IActionResult> EditProjects(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var projects = await _context.Projects.FindAsync(id);
+            if (projects == null)
+            {
+                return NotFound();
+            }
+            var menuItems = _menuService.GetMenuItems();
+            ViewBag.MenuItems = menuItems;
+            return View(projects);
+        }
+
+        // POST: ManageProject/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProjects(int id, [Bind("Id,Name,Description,Link,Meta,Hide,Order,Type,Locate,Price,Area,DateUp,upById,Image1,Image2,Image3,Image4,Image5")] Projects projects, IFormFile Image1, IFormFile Image2, IFormFile Image3, IFormFile Image4, IFormFile Image5)
+        {
+            if (id != projects.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Handle image upload and deletion if images are updated
+                    string[] imageProperties = { "Image1", "Image2", "Image3", "Image4", "Image5" };
+                    var imageFiles = new[] { Image1, Image2, Image3, Image4, Image5 };
+
+                    for (int i = 0; i < imageProperties.Length; i++)
+                    {
+                        var imageProperty = imageProperties[i];
+                        var imageFile = imageFiles[i];
+
+                        // If the image is not null (i.e., user uploaded a new image)
+                        if (imageFile != null)
+                        {
+                            // Delete the old image if it exists
+                            var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", (string)typeof(Projects).GetProperty(imageProperty).GetValue(projects));
+                            if (System.IO.File.Exists(oldImagePath))
+                            {
+                                System.IO.File.Delete(oldImagePath);
+                            }
+
+                            // Save the new image
+                            var filePath = Path.Combine("wwwroot/uploads", Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName));
+
+                            using (var stream = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), filePath), FileMode.Create))
+                            {
+                                await imageFile.CopyToAsync(stream);
+                            }
+
+                            // Update the project object with the new image path
+                            typeof(Projects).GetProperty(imageProperty).SetValue(projects, filePath.Replace("wwwroot", ""));
+                        }
+                    }
+
+                    _context.Update(projects);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProjectsExists(projects.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(projects);
+        }
+
+        // POST: ManageProject/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var projects = await _context.Projects.FindAsync(id);
+            if (projects != null)
+            {
+                // Delete images from wwwroot/uploads/ folder
+                var imageProperties = new[] { "Image1", "Image2", "Image3", "Image4", "Image5" };
+                foreach (var imageProperty in imageProperties)
+                {
+                    var imagePath = (string)typeof(Projects).GetProperty(imageProperty).GetValue(projects);
+                    if (!string.IsNullOrEmpty(imagePath))
+                    {
+                        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagePath);
+                        if (System.IO.File.Exists(fullPath))
+                        {
+                            System.IO.File.Delete(fullPath);
+                        }
+                    }
+                }
+
+                _context.Projects.Remove(projects);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ProjectsExists(int id)
+        {
+            return _context.Projects.Any(e => e.Id == id);
         }
 
         // POST: Upload images from CKEditor
         [HttpPost]
-        public IActionResult Upload(IFormFile upload)
+        public async Task<IActionResult> Upload(IFormFile upload)
         {
-            if (upload != null && upload.Length > 0)
+            if (upload.Length > 0)
             {
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", upload.FileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                // Lấy đường dẫn thư mục "wwwroot/uploads"
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+
+                // Tạo thư mục nếu chưa tồn tại
+                if (!Directory.Exists(uploadsFolder))
                 {
-                    upload.CopyTo(fileStream);
+                    Directory.CreateDirectory(uploadsFolder);
                 }
-                return Json(new { uploaded = true, url = "/uploads/" + upload.FileName });
+
+                // Tạo tên file an toàn
+                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(upload.FileName)}";
+
+                // Tạo đường dẫn lưu file
+                var fileSavePath = Path.Combine(uploadsFolder, fileName);
+
+                // Lưu file
+                await using (var fileStream = new FileStream(fileSavePath, FileMode.Create))
+                {
+                    await upload.CopyToAsync(fileStream); // Chờ quá trình lưu hoàn tất
+                }
+
+                // Tạo URL tương đối để trả về
+                var fileUrl = $"/uploads/{fileName}";
+
+                return Json(new { uploaded = true, url = fileUrl });
             }
-            return Json(new { uploaded = false, error = "Failed to upload the file." });
+
+            // Trường hợp không có file được upload
+            return Json(new { uploaded = false, error = "No file selected or file is empty." });
         }
-
+        
         [HttpPost]
-        public async Task<IActionResult> UpProject(Projects projects, List<IFormFile> uploadedImages)
+        public async Task<IActionResult> UpProject(Projects project, List<IFormFile> uploadedImages)
         {
-            // 1. Initialize the ProjectImages list if it's null
-            projects.ProjectImages = projects.ProjectImages ?? new List<ProjectImages>();
-
-            // 2. Extract image URLs from the Description field (from CKEditor)
-            var extractedImageUrls = ExtractImageUrls(projects.Description);
-            foreach (var url in extractedImageUrls)
+            if (ModelState.IsValid)
             {
-                projects.ProjectImages.Add(new ProjectImages { ImageUrl = url });
-            }
+                // Gộp giá trị địa chỉ thành 1 chuỗi
+                string location = Request.Form["Province"] + ", " + Request.Form["District"] + ", " + Request.Form["Ward"] + ", " + Request.Form["Street"];
+                project.Locate = location;
+                project.upById = HttpContext.Session.GetInt32("UserId") ?? 0;
+                project.Meta = RemoveVietnameseTone(project.Name).Trim().ToLower().Replace(" ", "-");
+                project.Link = "/id=" + project.Id + "&name=" + project.Meta;
 
-            // 3. Save uploaded images from the form to the server and add them to ProjectImages
-            if (uploadedImages != null && uploadedImages.Any())
-            {
-                foreach (var file in uploadedImages)
+                // Handle image uploads
+                if (uploadedImages.Count > 0)
                 {
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    for (int i = 0; i < uploadedImages.Count && i < 5; i++)
                     {
-                        await file.CopyToAsync(stream);
+                        var file = uploadedImages[i];
+                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
+
+                        // Save image to the server
+                        await using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
+                        // Assign the image path to the corresponding property in the project
+                        switch (i)
+                        {
+                            case 0:
+                                project.Image1 = fileName;
+                                break;
+                            case 1:
+                                project.Image2 = fileName;
+                                break;
+                            case 2:
+                                project.Image3 = fileName;
+                                break;
+                            case 3:
+                                project.Image4 = fileName;
+                                break;
+                            case 4:
+                                project.Image5 = fileName;
+                                break;
+                        }
                     }
-
-                    projects.ProjectImages.Add(new ProjectImages { ImageUrl = "/uploads/" + fileName });
                 }
+
+                // Save project data to the database
+                _context.Projects.Add(project);
+                await _context.SaveChangesAsync();
+
+                // Redirect to the project detail page after saving
+                return RedirectToAction("Detail", new { id = Uri.EscapeDataString(project.Link) });
             }
 
-            // 4. Clean the Description (remove image tags if necessary)
-            projects.Description = Regex.Replace(projects.Description, @"<img [^>]*src=""([^""]+)""[^>]*>", "");
-
-            // 5. Save the project to the database
-            _context.Projects.Add(projects);
-            await _context.SaveChangesAsync();
-
-            // 6. Save ProjectImage entries
-            foreach (var projectImage in projects.ProjectImages)
-            {
-                projectImage.ProjectId = projects.Id; // Make sure the ProjectId is set
-                _context.ProjectImages.Add(projectImage); // Do NOT set the 'Id' here
-            }
-            await _context.SaveChangesAsync(); // This will insert the images with auto-generated IDs
-
-            // 7. Redirect to the Details page for the newly created project
-            return RedirectToAction("Details", new { id = projects.Id });
+            // Return to form with errors if model is invalid
+            return View("PostProject", model: new Projects());
         }
 
         // GET: Details of a project
@@ -161,23 +345,37 @@ namespace BatDongSan.Controllers
             var menuItems = _menuService.GetMenuItems();
             ViewBag.MenuItems = menuItems;
 
-            var project = _projectService.GetProjectDetail(id);
-            return View("Index");
+            var project= _projectService.GetProjectDetail(id);
+            return View("Detail", project);
         }
-
-        // Extract image URLs from HTML content
-        private List<string> ExtractImageUrls(string htmlContent)
+        public IActionResult Detail(int id)
         {
-            var urls = new List<string>();
-            var matchCollection = Regex.Matches(htmlContent, @"<img [^>]*src=""([^""]+)""[^>]*>");
-            foreach (Match match in matchCollection)
+            var menuItems = _menuService.GetMenuItems();
+            ViewBag.MenuItems = menuItems;
+            var project = _projectService.GetProjectDetail(id); // Replace with your actual data-fetching method.
+
+            ViewBag.ProjectById = project;
+
+            var top5Projects = _projectService.GetTop5(); // Replace with actual logic.
+            ViewBag.Top5Pro = top5Projects;
+
+            return View();
+        }
+        private string RemoveVietnameseTone(string str)
+        {
+            // Chuyển đổi dấu tiếng Việt thành không dấu
+            string formD = str.Normalize(NormalizationForm.FormD);
+            StringBuilder sb = new StringBuilder();
+
+            foreach (char c in formD)
             {
-                if (match.Groups.Count > 1)
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
                 {
-                    urls.Add(match.Groups[1].Value);
+                    sb.Append(c);
                 }
             }
-            return urls;
+
+            return sb.ToString().Normalize(NormalizationForm.FormC);
         }
     }
 }

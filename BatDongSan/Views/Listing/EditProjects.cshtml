@@ -1,0 +1,173 @@
+@model BatDongSan.Models.Projects
+
+@{
+ViewData["Title"] = "Edit Project";
+Layout = "_Layout1";
+}
+<section class="ftco-section">
+    <div class="container">
+        <h2 class="mb-4">Your Project</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="EditProjects">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- Name -->
+                    <div class="mb-4">
+                        <label asp-for="Name" class="form-label">Name</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <!-- Diện tích -->
+                    <div class="mb-4">
+                        <label asp-for="Area" class="form-label">Area</label>
+                        <input asp-for="Area" class="form-control" />
+                        <span asp-validation-for="Area" class="text-danger"></span>
+                    </div>
+
+                    <!-- Giá -->
+                    <div class="mb-4">
+                        <label asp-for="Price" class="form-label">Price</label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <!-- Locate -->
+                    <div class="mb-4">
+                        <label asp-for="Locate" class="form-label">Locate</label>
+                        <input asp-for="Locate" class="form-control" />
+                        <span asp-validation-for="Locate" class="text-danger"></span>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <!-- Type -->
+                    <div class="mb-4">
+                        <label asp-for="Type" class="form-label">Type</label>
+                        <input asp-for="Type" class="form-control" />
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+
+                    <!-- Hide -->
+                    <div class="mb-4 form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Hide" /> @Html.DisplayNameFor(model => model.Hide)
+                        </label>
+                    </div>
+
+                    <!-- Image1 -->
+                    <div class="mb-4">
+                        <label asp-for="Image1" class="form-label">Image1</label>
+                        <input asp-for="Image1" class="form-control" />
+                        <span asp-validation-for="Image1" class="text-danger"></span>
+
+                        <!-- Display Image1 if it exists -->
+                        @if (!string.IsNullOrEmpty(Model.Image1))
+                        {
+                        <div>
+                            <img src="@Url.Content("~/uploads/" + Model.Image1)" alt="Image1" class="img-thumbnail" style="width: 100px; height: auto;">
+                        </div>
+                        }
+
+                        <!-- Image upload option -->
+                        <div class="input-group mt-2">
+                            <input type="file" class="form-control" id="uploadImage1" name="Image1" accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- Image2 -->
+                    <div class="mb-4">
+                        <label asp-for="Image2" class="form-label">Image2</label>
+                        <input asp-for="Image2" class="form-control" />
+                        <span asp-validation-for="Image2" class="text-danger"></span>
+
+                        <!-- Display Image2 if it exists -->
+                        @if (!string.IsNullOrEmpty(Model.Image2))
+                        {
+                        <div>
+                            <img src="@Url.Content("~/uploads/" + Model.Image2)" alt="Image2" class="img-thumbnail" style="width: 100px; height: auto;">
+                        </div>
+                        }
+
+                        <!-- Image upload option -->
+                        <div class="input-group mt-2">
+                            <input type="file" class="form-control" id="uploadImage2" name="Image2" accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- Image3 -->
+                    <div class="mb-4">
+                        <label asp-for="Image3" class="form-label">Image3</label>
+                        <input asp-for="Image3" class="form-control" />
+                        <span asp-validation-for="Image3" class="text-danger"></span>
+
+                        <!-- Display Image3 if it exists -->
+                        @if (!string.IsNullOrEmpty(Model.Image3))
+                        {
+                        <div>
+                            <img src="@Url.Content("~/uploads/" + Model.Image3)" alt="Image3" class="img-thumbnail" style="width: 100px; height: auto;">
+                        </div>
+                        }
+
+                        <!-- Image upload option -->
+                        <div class="input-group mt-2">
+                            <input type="file" class="form-control" id="uploadImage3" name="Image3" accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- Image4 -->
+                    <div class="mb-4">
+                        <label asp-for="Image4" class="form-label">Image 4</label>
+                        <input asp-for="Image4" class="form-control" />
+                        <span asp-validation-for="Image4" class="text-danger"></span>
+
+                        <!-- Display Image4 if it exists -->
+                        @if (!string.IsNullOrEmpty(Model.Image4))
+                        {
+                        <div>
+                            <img src="@Url.Content("~/uploads/" + Model.Image4)" alt="Image4" class="img-thumbnail" style="width: 100px; height: auto;">
+                        </div>
+                        }
+
+                        <!-- Image upload option -->
+                        <div class="input-group mt-2">
+                            <input type="file" class="form-control" id="uploadImage4" name="Image4" accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- Image5 -->
+                    <div class="mb-4">
+                        <label asp-for="Image5" class="form-label">Image 5</label>
+                        <input asp-for="Image5" class="form-control" />
+                        <span asp-validation-for="Image5" class="text-danger"></span>
+
+                        <!-- Display Image5 if it exists -->
+                        @if (!string.IsNullOrEmpty(Model.Image5))
+                        {
+                        <div>
+                            <img src="@Url.Content("~/uploads/" + Model.Image5)" alt="Image5" class="img-thumbnail" style="width: 100px; height: auto;">
+                        </div>
+                        }
+
+                        <!-- Image upload option -->
+                        <div class="input-group mt-2">
+                            <input type="file" class="form-control" id="uploadImage5" name="Image5" accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="mb-4 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Save Project</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

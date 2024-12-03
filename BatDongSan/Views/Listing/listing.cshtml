@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<BatDongSan.Models.Projects>
 @{
-    ViewData["Title"] = "Listing";
-    Layout = "_Layout1";
+ViewData["Title"] = "Listing";
+Layout = "_Layout1";
 }
 <section class="ftco-section ftco-properties" id="properties-section">
     <div class="container">
@@ -15,48 +15,53 @@
                 <div class="carousel-properties owl-carousel">
                     @foreach (var pro in Model)
                     {
-                        <div class="item">
-                            <div class="properties ftco-animate">
-                                <div class="img">
-                                    <a href="@Url.Action("Details", "Listing", new { id = pro.Id })">
-                                        <img src="@Url.Content("~" + pro.ProjectImages.FirstOrDefault()?.ImageUrl)" class="img-fluid" alt="Colorlib Template">
-                                    </a>
-                                </div>
-                                <div class="desc">
-                                    <div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
+                    <div class="item">
+                        <div class="properties ftco-animate">
+                            <div class="img">
+                                <a href="@Url.Action("Detail", "Listing", new { id = pro.Id })">
+                                    @if (!string.IsNullOrEmpty(pro.Image1))
+                                    {
+                                    <img src="@Url.Content(pro.Image1)" class="img-fluid" alt="@pro.Name">
+                                    }
+                                </a>
+                            </div>
+                            <div class="desc">
+                                <div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
                                         <span>
                                             @if (pro.Type == 0)
                                             {
-                                                @:Rent
+                                            @:Rent
                                             }
                                             else if (pro.Type == 1)
                                             {
-                                                @:Sale
+                                            @:Sale
                                             }
                                         </span>
-                                    </div>
-                                    <div class="d-flex pt-5">
-                                        <div>
-                                            <h3><a href="@Url.Action("Details", "Listing", new { id = pro.Id })">@pro.Name</a></h3>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p>@pro.Description</p>
-                                    </div>
-                                    <div class="pl-md-3" style="padding: 0px">
-                                        <p class="price" style="align-items:flex-start">$ @pro.Price - @pro.Area m&sup2;</p>
-                                    </div>
-                                    <p class="h-info">
-                                        <span><i class="fas fa-map-marker-alt m-1"></i></span>
-                                        <span class="location">@pro.Locate</span>
-                                    </p>
                                 </div>
+                                <div class="d-flex pt-5">
+                                    <div>
+                                        <h3><a href="@Url.Action("Detail", "Listing", new { id = pro.Id })">@pro.Name</a></h3>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>@pro.Description</p>
+                                </div>
+                                <div class="pl-md-3" style="padding: 0px">
+                                    <p class="price" style="align-items:flex-start">$ @pro.Price - @pro.Area m&sup2;</p>
+                                </div>
+                                <p class="h-info">
+                                    <span><i class="fas fa-map-marker-alt m-1"></i></span>
+                                    <span class="location">@pro.Locate</span>
+                                </p>
                             </div>
                         </div>
+                    </div>
                     }
                 </div>
             </div>
         </div>
+
+        <!-- Rent Listing Section -->
         <div class="row">
             <div class="row justify-content-center pb-2">
                 <div class="col-md-12 heading-section ftco-animate">
@@ -68,49 +73,54 @@
                 <div class="carousel-properties owl-carousel">
                     @foreach (var pro in ViewBag.RentPro)
                     {
-                        <div class="item">
-                            <div class="properties ftco-animate">
-                                <div class="img">
-                                    <a href="@Url.Action("Details", "Listing", new { id = pro.Id })">
-                                        <img src="@Url.Content("~" + pro.RepresentativeImage)" class="img-fluid" alt="@pro.Name">
-                                    </a>
-                                </div>
-                                <div class="desc">
-                                    <div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
+                    <div class="item">
+                        <div class="properties ftco-animate">
+                            <div class="img">
+                                <a href="@Url.Action("Detail", "Listing", new { id = pro.Id })">
+                                    @if (!string.IsNullOrEmpty(pro.Image1))
+                                    {
+                                    <img src="@Url.Content(pro.Image1)" class="img-fluid" alt="@pro.Name">
+                                    }
+                                </a>
+                            </div>
+                            <div class="desc">
+                                <div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
                                         <span>
                                             @if (pro.Type == 0)
                                             {
-                                                @:Rent
+                                            @:Rent
                                             }
                                             else if (pro.Type == 1)
                                             {
-                                                @:Sale
+                                            @:Sale
                                             }
                                         </span>
-                                    </div>
-                                    <div class="d-flex pt-5">
-                                        <div>
-                                            <h3><a href="@Url.Action("Details", "Listing", new { id = pro.Id })">@pro.Name</a></h3>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p>@pro.Description</p>
-                                    </div>
-                                    <div class="pl-md-3" style="padding: 0px">
-                                        <p class="price" style="align-items:flex-start">$@pro.Price - @pro.Area m&sup2;</p>
-                                    </div>
-                                    <p class="h-info">
-                                        <span><i class="fas fa-map-marker-alt m-1"></i></span>
-                                        <span class="location">@pro.Locate</span>
-                                    </p>
                                 </div>
+                                <div class="d-flex pt-5">
+                                    <div>
+                                        <h3><a href="@Url.Action("Detail", "Listing", new { id = pro.Id })">@pro.Name</a></h3>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>@pro.Description</p>
+                                </div>
+                                <div class="pl-md-3" style="padding: 0px">
+                                    <p class="price" style="align-items:flex-start">$ @pro.Price - @pro.Area m&sup2;</p>
+                                </div>
+                                <p class="h-info">
+                                    <span><i class="fas fa-map-marker-alt m-1"></i></span>
+                                    <span class="location">@pro.Locate</span>
+                                </p>
                             </div>
                         </div>
+                    </div>
                     }
                 </div>
                 <a class="d-flex btn-link col-12 justify-content-center" href="@Url.Action("RentListing", "Listing")"><h5 style="color: #999999">Xem thêm</h5></a>
             </div>
         </div>
+
+        <!-- Sale Listing Section -->
         <div class="row">
             <div class="row justify-content-center pb-2">
                 <div class="col-md-12 heading-section ftco-animate">
@@ -122,44 +132,47 @@
                 <div class="carousel-properties owl-carousel">
                     @foreach (var pro in ViewBag.SalePro)
                     {
-                        <div class="item">
-                            <div class="properties ftco-animate">
-                                <div class="img">
-                                    <a href="@Url.Action("Details", "Listing", new { id = pro.Id })">
-                                        <img src="@Url.Content("~" + pro.RepresentativeImage)" class="img-fluid" alt="@pro.Name">
-                                    </a>
-                                </div>
-                                <div class="desc">
-                                    <div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
+                    <div class="item">
+                        <div class="properties ftco-animate">
+                            <div class="img">
+                                <a href="@Url.Action("Detail", "Listing", new { id = pro.Id })">
+                                    @if (!string.IsNullOrEmpty(pro.Image1))
+                                    {
+                                    <img src="@Url.Content(pro.Image1)" class="img-fluid" alt="@pro.Name">
+                                    }
+                                </a>
+                            </div>
+                            <div class="desc">
+                                <div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
                                         <span>
                                             @if (pro.Type == 0)
                                             {
-                                                @:Rent
+                                            @:Rent
                                             }
                                             else if (pro.Type == 1)
                                             {
-                                                @:Sale
+                                            @:Sale
                                             }
                                         </span>
-                                    </div>
-                                    <div class="d-flex pt-5">
-                                        <div>
-                                            <h3><a href="@Url.Action("Details", "Listing", new { id = pro.Id })">@pro.Name</a></h3>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p>@pro.Description</p>
-                                    </div>
-                                    <div class="pl-md-3" style="padding: 0px">
-                                        <p class="price" style="align-items:flex-start">$ @pro.Price - 100m&sup2;</p>
-                                    </div>
-                                    <p class="h-info">
-                                        <span><i class="fas fa-map-marker-alt m-1"></i></span>
-                                        <span class="location">@pro.Locate</span>
-                                    </p>
                                 </div>
+                                <div class="d-flex pt-5">
+                                    <div>
+                                        <h3><a href="@Url.Action("Detail", "Listing", new { id = pro.Id })">@pro.Name</a></h3>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>@pro.Description</p>
+                                </div>
+                                <div class="pl-md-3" style="padding: 0px">
+                                    <p class="price" style="align-items:flex-start">$ @pro.Price - @pro.Area m&sup2;</p>
+                                </div>
+                                <p class="h-info">
+                                    <span><i class="fas fa-map-marker-alt m-1"></i></span>
+                                    <span class="location">@pro.Locate</span>
+                                </p>
                             </div>
                         </div>
+                    </div>
                     }
                 </div>
             </div>
