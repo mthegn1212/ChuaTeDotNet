@@ -92,7 +92,7 @@ Layout = "_Layout1";
         </div>
     </div>
 </div>
-
+<script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
  <script>
      let provinceData = {}; // Biến toàn cục lưu dữ liệu tỉnh/thành phố
      let districtData = {}; // Biến toàn cục lưu dữ liệu quận/huyện
@@ -168,15 +168,19 @@ Layout = "_Layout1";
         })
         .catch(error => console.error(error));
 
-    // Hàm đồng bộ nội dung CKEditor vào input ẩn
-    function syncDescription() {
-        if (editorInstance) {
-            const descriptionField = document.getElementById('Description');
-            descriptionField.value = editorInstance.getData();
-        }
-    }
+     function syncDescription() {
+         if (editorInstance) {
+             const rawContent = editorInstance.getData(); // Lấy nội dung từ CKEditor
+             const cleanedContent = rawContent
+                 .replace(/<p>/g, '') // Xóa thẻ mở `<p>`
+                 .replace(/<\/p>/g, '') // Xóa thẻ đóng `</p>`
+                 .trim(); // Xóa khoảng trắng đầu và cuối
+             const descriptionField = document.getElementById('Description');
+             descriptionField.value = cleanedContent; // Gán nội dung đã làm sạch vào input ẩn
+         }
+     }
 
-    // Hàm lấy địa chỉ đầy đủ
+     // Hàm lấy địa chỉ đầy đủ
     function getLocate() {
         const provinceId = document.getElementById('tinhThanh').value;
         const districtId = document.getElementById('quanHuyen').value;
@@ -195,28 +199,14 @@ Layout = "_Layout1";
     function setLocate() {
         document.getElementById('Locate').value = getLocate();
     }
-
-    // Hàm xử lý khi submit form
-    function handleFormSubmit(event) {
-        setLocate(); // Lấy và gán địa chỉ
-        syncDescription(); // Đồng bộ nội dung CKEditor
-        alert('Form is submitting!');
-        return true; // Cho phép gửi form
-    }
 </script>
-
-<script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
- <script>
-    // CKEditor setup
-    ClassicEditor
-        .create(document.querySelector('#Description'))
-        .catch(error => {
-            console.error(error);
-        });
-</script>
- 
  <script>
      function handleFormSubmit() {
+
+         if (editorInstance) {
+             const descriptionField = document.getElementById('Description');
+             descriptionField.value = editorInstance.getData();
+         }
          // Gọi hàm để đặt giá trị địa chỉ
          setLocate();
 
@@ -224,7 +214,7 @@ Layout = "_Layout1";
          syncDescription();
 
          // Hiển thị thông báo (nếu cần)
-         alert('Form is submitting!');
+         alert(document.getElementById('Description').value);
 
          // Trả về true để cho phép gửi form
          return true;

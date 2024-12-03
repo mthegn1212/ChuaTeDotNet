@@ -4,6 +4,7 @@ using BatDongSan.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace BatDongSan.Controllers
 {
@@ -288,7 +289,16 @@ namespace BatDongSan.Controllers
                 project.Locate = location;
                 project.upById = HttpContext.Session.GetInt32("UserId") ?? 0;
                 project.Meta = RemoveVietnameseTone(project.Name).Trim().ToLower().Replace(" ", "-");
+
+                // Lưu dữ liệu ban đầu để có giá trị Id
+                _context.Projects.Add(project);
+                await _context.SaveChangesAsync();
+
+                // Gán giá trị Link sau khi có Id
                 project.Link = "/id=" + project.Id + "&name=" + project.Meta;
+
+                // Cập nhật lại dự án với giá trị Link
+                _context.Projects.Update(project);
 
                 // Handle image uploads
                 if (uploadedImages.Count > 0)
@@ -327,40 +337,30 @@ namespace BatDongSan.Controllers
                     }
                 }
 
-                // Save project data to the database
-                _context.Projects.Add(project);
+                // Lưu lại dữ liệu cuối cùng (bao gồm cả hình ảnh)
                 await _context.SaveChangesAsync();
 
                 // Redirect to the project detail page after saving
-                return RedirectToAction("Detail", new { id = Uri.EscapeDataString(project.Link) });
+                return View("Detail", new { id = project.Id });
             }
 
             // Return to form with errors if model is invalid
             return View("PostProject", model: new Projects());
         }
 
-        // GET: Details of a project
-        public ActionResult Details(int id)
-        {
-            var menuItems = _menuService.GetMenuItems();
-            ViewBag.MenuItems = menuItems;
-
-            var project= _projectService.GetProjectDetail(id);
-            return View("Detail", project);
-        }
         public IActionResult Detail(int id)
         {
             var menuItems = _menuService.GetMenuItems();
             ViewBag.MenuItems = menuItems;
             var project = _projectService.GetProjectDetail(id); // Replace with your actual data-fetching method.
 
-            ViewBag.ProjectById = project;
-
             var top5Projects = _projectService.GetTop5(); // Replace with actual logic.
             ViewBag.Top5Pro = top5Projects;
+            ViewBag.ProjectById = project;
 
-            return View();
+            return View(project);
         }
+
         private string RemoveVietnameseTone(string str)
         {
             // Chuyển đổi dấu tiếng Việt thành không dấu
