@@ -59,6 +59,7 @@ namespace BatDongSan.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         // POST: Admin/News/Create
         // POST: Admin/News/Create
+        // POST: Admin/News/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(News news)
@@ -68,13 +69,14 @@ namespace BatDongSan.Areas.Admin.Controllers
                 // Gán giá trị DateUp là ngày hiện tại khi tạo mới
                 news.DateUp = DateTime.Now;
 
+                // Thêm bản tin vào cơ sở dữ liệu
                 _context.Add(news);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index)); // Quay lại danh sách
             }
 
-            // Trả về lại view "Details" nhưng với đối tượng news đầy đủ
-            return View(news); // Truyền đối tượng news vào view
+            // Nếu có lỗi, trả về lại view với đối tượng news đã đầy đủ thông tin
+            return View(news); 
         }
 
         // GET: Admin/News/Edit/5

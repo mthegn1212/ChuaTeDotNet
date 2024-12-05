@@ -125,11 +125,11 @@ Layout = "~/Views/Shared/_Layout1.cshtml";
             {
             <div class="col-md-3 col-lg-3 d-flex ftco-animate">
                 <div class="blog-entry ">
-                    <a href="@Url.Action("News", "News", new { id = blog.Id })">
-                        <img class="img-fluid" src="@Url.Content("~/images/" + blog.ImagePath)" alt="@blog.Title">
+                    <a href="@Url.Action("Index", "News", new { id = blog.Id })">
+                        <img class="img-fluid" src="@Url.Content("~/uploads/0f0ca1db-569f-4f73-9112-80c67c9296a5.png")" alt="@blog.Title">
                     </a>
                     <div class="text float-right d-block">
-                        <h3 class="heading"><a href="@Url.Action("news", new { id = blog.Id })">@blog.Title</a></h3>
+                        <h3 class="heading"><a href="@Url.Action("Index", "News", new { id = blog.Id })">@blog.Title</a></h3>
                         <p>@blog.Content</p>
                     </div>
                 </div>

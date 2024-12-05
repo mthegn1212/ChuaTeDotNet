@@ -4,30 +4,33 @@
 ViewData["Title"] = "Edit Project";
 Layout = "_Layout1";
 }
+@{
+    var pro = ViewBag.ProjectById;
+}
 <section class="ftco-section">
     <div class="container">
-        <h2 class="mb-4">Your Project</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <form asp-action="EditProjects">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <h2 class="text-center mb-5">Edit Your Project</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form asp-action="EditProjects" enctype="multipart/form-data" class="shadow p-4 bg-white rounded">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                     <input type="hidden" asp-for="Id" />
 
                     <!-- Name -->
                     <div class="mb-4">
-                        <label asp-for="Name" class="form-label">Name</label>
+                        <label asp-for="Name" class="form-label">Project Name</label>
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
-                    <!-- Diện tích -->
+                    <!-- Area -->
                     <div class="mb-4">
                         <label asp-for="Area" class="form-label">Area</label>
                         <input asp-for="Area" class="form-control" />
                         <span asp-validation-for="Area" class="text-danger"></span>
                     </div>
 
-                    <!-- Giá -->
+                    <!-- Price -->
                     <div class="mb-4">
                         <label asp-for="Price" class="form-label">Price</label>
                         <input asp-for="Price" class="form-control" />
@@ -37,137 +40,91 @@ Layout = "_Layout1";
                     <!-- Locate -->
                     <div class="mb-4">
                         <label asp-for="Locate" class="form-label">Locate</label>
-                        <input asp-for="Locate" class="form-control" />
+                        <div class="input-group">
+                            <input asp-for="Locate" id="displayLocate" type="text" class="form-control" readonly placeholder="Click to select address">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addressModal">
+                                Change
+                            </button>
+                        </div>
+                        <input asp-for="Locate" type="hidden" id="Locate" />
                         <span asp-validation-for="Locate" class="text-danger"></span>
                     </div>
 
                     <!-- Description -->
                     <div class="mb-4">
-                        <label asp-for="Description" class="form-label">Description</label>
-                        <textarea asp-for="Description" class="form-control"></textarea>
+                        <label class="form-label">Old Description:</label>
+                        <p class="text-muted">@pro.Description</p>
+                        <label asp-for="Description" class="form-label">New Description:</label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
 
                     <!-- Type -->
                     <div class="mb-4">
-                        <label asp-for="Type" class="form-label">Type</label>
-                        <input asp-for="Type" class="form-control" />
-                        <span asp-validation-for="Type" class="text-danger"></span>
+                        <label for="loaiBDS" class="form-label">Type</label>
+                        <select asp-for="Type" class="form-select" id="loaiBDS" name="Type" required>
+                            <option value=0 selected>Rent</option>
+                            <option value=1>Sell</option>
+                        </select>
                     </div>
 
                     <!-- Hide -->
                     <div class="mb-4 form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" asp-for="Hide" /> @Html.DisplayNameFor(model => model.Hide)
-                        </label>
+                        <input class="form-check-input" asp-for="Hide" />
+                        <label class="form-check-label">@Html.DisplayNameFor(model => model.Hide)</label>
                     </div>
 
-                    <!-- Image1 -->
-                    <div class="mb-4">
-                        <label asp-for="Image1" class="form-label">Image1</label>
-                        <input asp-for="Image1" class="form-control" />
-                        <span asp-validation-for="Image1" class="text-danger"></span>
-
-                        <!-- Display Image1 if it exists -->
-                        @if (!string.IsNullOrEmpty(Model.Image1))
+                    <!-- Old Images -->
+                    <div id="oldImages" class="d-flex flex-wrap mb-4">
+                        @for (int i = 1; i <= 5; i++)
                         {
-                        <div>
-                            <img src="@Url.Content("~/uploads/" + Model.Image1)" alt="Image1" class="img-thumbnail" style="width: 100px; height: auto;">
+                        var imageProperty = $"Image{i}";
+                        var currentImage = Model.GetType().GetProperty(imageProperty)?.GetValue(Model, null)?.ToString();
+
+                        if (!string.IsNullOrEmpty(currentImage))
+                        {
+                        <div class="me-2 mb-2">
+                            <img src="@Url.Content($"~/uploads/{currentImage}")" alt="Old Image @i" class="img-thumbnail" style="width: 100px; height: auto;">
                         </div>
                         }
-
-                        <!-- Image upload option -->
-                        <div class="input-group mt-2">
-                            <input type="file" class="form-control" id="uploadImage1" name="Image1" accept="image/*">
-                        </div>
+                        }
                     </div>
 
-                    <!-- Image2 -->
+                    <!-- Upload Images -->
                     <div class="mb-4">
-                        <label asp-for="Image2" class="form-label">Image2</label>
-                        <input asp-for="Image2" class="form-control" />
-                        <span asp-validation-for="Image2" class="text-danger"></span>
-
-                        <!-- Display Image2 if it exists -->
-                        @if (!string.IsNullOrEmpty(Model.Image2))
-                        {
-                        <div>
-                            <img src="@Url.Content("~/uploads/" + Model.Image2)" alt="Image2" class="img-thumbnail" style="width: 100px; height: auto;">
-                        </div>
-                        }
-
-                        <!-- Image upload option -->
-                        <div class="input-group mt-2">
-                            <input type="file" class="form-control" id="uploadImage2" name="Image2" accept="image/*">
-                        </div>
-                    </div>
-
-                    <!-- Image3 -->
-                    <div class="mb-4">
-                        <label asp-for="Image3" class="form-label">Image3</label>
-                        <input asp-for="Image3" class="form-control" />
-                        <span asp-validation-for="Image3" class="text-danger"></span>
-
-                        <!-- Display Image3 if it exists -->
-                        @if (!string.IsNullOrEmpty(Model.Image3))
-                        {
-                        <div>
-                            <img src="@Url.Content("~/uploads/" + Model.Image3)" alt="Image3" class="img-thumbnail" style="width: 100px; height: auto;">
-                        </div>
-                        }
-
-                        <!-- Image upload option -->
-                        <div class="input-group mt-2">
-                            <input type="file" class="form-control" id="uploadImage3" name="Image3" accept="image/*">
-                        </div>
-                    </div>
-
-                    <!-- Image4 -->
-                    <div class="mb-4">
-                        <label asp-for="Image4" class="form-label">Image 4</label>
-                        <input asp-for="Image4" class="form-control" />
-                        <span asp-validation-for="Image4" class="text-danger"></span>
-
-                        <!-- Display Image4 if it exists -->
-                        @if (!string.IsNullOrEmpty(Model.Image4))
-                        {
-                        <div>
-                            <img src="@Url.Content("~/uploads/" + Model.Image4)" alt="Image4" class="img-thumbnail" style="width: 100px; height: auto;">
-                        </div>
-                        }
-
-                        <!-- Image upload option -->
-                        <div class="input-group mt-2">
-                            <input type="file" class="form-control" id="uploadImage4" name="Image4" accept="image/*">
-                        </div>
-                    </div>
-
-                    <!-- Image5 -->
-                    <div class="mb-4">
-                        <label asp-for="Image5" class="form-label">Image 5</label>
-                        <input asp-for="Image5" class="form-control" />
-                        <span asp-validation-for="Image5" class="text-danger"></span>
-
-                        <!-- Display Image5 if it exists -->
-                        @if (!string.IsNullOrEmpty(Model.Image5))
-                        {
-                        <div>
-                            <img src="@Url.Content("~/uploads/" + Model.Image5)" alt="Image5" class="img-thumbnail" style="width: 100px; height: auto;">
-                        </div>
-                        }
-
-                        <!-- Image upload option -->
-                        <div class="input-group mt-2">
-                            <input type="file" class="form-control" id="uploadImage5" name="Image5" accept="image/*">
-                        </div>
+                        <label for="uploadAnh" class="form-label">Upload Images</label>
+                        <input type="file" class="form-control" id="uploadAnh" name="uploadedImages" multiple accept="image/*">
                     </div>
 
                     <!-- Submit Button -->
                     <div class="mb-4 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary">Save Project</button>
+                        <button type="submit" class="btn btn-primary px-4">Save</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Modal for selecting address -->
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addressModalLabel">Select Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="address-group">
+                    <!-- Address selection form -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
+<script src="~/js/EditProjectJs.js"></script>

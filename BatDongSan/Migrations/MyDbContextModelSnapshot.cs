@@ -64,7 +64,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 1,
-                            DateBegin = new DateTime(2024, 12, 3, 11, 49, 3, 882, DateTimeKind.Local).AddTicks(9288),
+                            DateBegin = new DateTime(2024, 12, 5, 15, 16, 38, 834, DateTimeKind.Local).AddTicks(1294),
                             Hide = false,
                             Link = "/RentListing",
                             MenuItemId = 2,
@@ -75,7 +75,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 2,
-                            DateBegin = new DateTime(2024, 12, 3, 11, 49, 3, 882, DateTimeKind.Local).AddTicks(9290),
+                            DateBegin = new DateTime(2024, 12, 5, 15, 16, 38, 834, DateTimeKind.Local).AddTicks(1296),
                             Hide = false,
                             Link = "/SaleListing",
                             MenuItemId = 2,
@@ -122,7 +122,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 1,
-                            DateBegin = new DateTime(2024, 12, 3, 11, 49, 3, 882, DateTimeKind.Local).AddTicks(9107),
+                            DateBegin = new DateTime(2024, 12, 5, 15, 16, 38, 834, DateTimeKind.Local).AddTicks(1139),
                             Hide = false,
                             Link = "/",
                             Meta = "home",
@@ -132,7 +132,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 2,
-                            DateBegin = new DateTime(2024, 12, 3, 11, 49, 3, 882, DateTimeKind.Local).AddTicks(9118),
+                            DateBegin = new DateTime(2024, 12, 5, 15, 16, 38, 834, DateTimeKind.Local).AddTicks(1152),
                             Hide = false,
                             Link = "/listing",
                             Meta = "listing",
@@ -142,7 +142,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 3,
-                            DateBegin = new DateTime(2024, 12, 3, 11, 49, 3, 882, DateTimeKind.Local).AddTicks(9120),
+                            DateBegin = new DateTime(2024, 12, 5, 15, 16, 38, 834, DateTimeKind.Local).AddTicks(1154),
                             Hide = false,
                             Link = "/news",
                             Meta = "news",
@@ -152,7 +152,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 4,
-                            DateBegin = new DateTime(2024, 12, 3, 11, 49, 3, 882, DateTimeKind.Local).AddTicks(9121),
+                            DateBegin = new DateTime(2024, 12, 5, 15, 16, 38, 834, DateTimeKind.Local).AddTicks(1156),
                             Hide = false,
                             Link = "/PostProject",
                             Meta = "post-project",
@@ -162,7 +162,7 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 5,
-                            DateBegin = new DateTime(2024, 12, 3, 11, 49, 3, 882, DateTimeKind.Local).AddTicks(9123),
+                            DateBegin = new DateTime(2024, 12, 5, 15, 16, 38, 834, DateTimeKind.Local).AddTicks(1157),
                             Hide = false,
                             Link = "/ProjectManagement",
                             Meta = "project-management",
@@ -183,32 +183,58 @@ namespace BatDongSan.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DateUp")
+                    b.Property<DateTime>("DateUp")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Detail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("Hide")
+                    b.Property<bool>("Hide")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Image1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image3")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image4")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image5")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImagePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Link")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Meta")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Order")
+                    b.Property<int>("Order")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("UpById")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -219,40 +245,58 @@ namespace BatDongSan.Migrations
                         {
                             Id = 1,
                             Content = "Celebrate the grand opening of Lạc Long Quân Tower, the new landmark in Hà Nội.",
-                            DateUp = new DateTime(2024, 12, 3, 11, 49, 3, 882, DateTimeKind.Local).AddTicks(9317),
+                            DateUp = new DateTime(2024, 12, 5, 15, 16, 38, 834, DateTimeKind.Local).AddTicks(1425),
                             Detail = "Lạc Long Quân Tower offers luxury apartments with premium amenities for a modern lifestyle.",
                             Hide = false,
-                            ImagePath = "/images/news/laclongquan-tower.jpg",
+                            Image1 = "/images/news/laclongquan-tower.jpg",
+                            Image2 = "",
+                            Image3 = "",
+                            Image4 = "",
+                            Image5 = "",
+                            ImagePath = "",
                             Link = "/news/laclongquan-tower-opening",
                             Meta = "-1",
                             Order = 1,
-                            Title = "Grand Opening of Lạc Long Quân Tower"
+                            Title = "Grand Opening of Lạc Long Quân Tower",
+                            UpById = 0
                         },
                         new
                         {
                             Id = 2,
                             Content = "Discover the perfect blend of nature and modern living at Green Home Hà Nội.",
-                            DateUp = new DateTime(2024, 12, 3, 11, 49, 3, 882, DateTimeKind.Local).AddTicks(9322),
+                            DateUp = new DateTime(2024, 12, 5, 15, 16, 38, 834, DateTimeKind.Local).AddTicks(1431),
                             Detail = "Green Home Hà Nội features lush gardens, eco-friendly designs, and convenient facilities.",
                             Hide = false,
-                            ImagePath = "/images/news/green-home.jpg",
+                            Image1 = "/images/news/green-home.jpg",
+                            Image2 = "",
+                            Image3 = "",
+                            Image4 = "",
+                            Image5 = "",
+                            ImagePath = "",
                             Link = "/news/green-home-hanoi",
                             Meta = "-2",
                             Order = 2,
-                            Title = "Green Living in the Heart of Hà Nội"
+                            Title = "Green Living in the Heart of Hà Nội",
+                            UpById = 0
                         },
                         new
                         {
                             Id = 3,
                             Content = "Experience unparalleled luxury at the newly launched apartments in the city center.",
-                            DateUp = new DateTime(2024, 12, 3, 11, 49, 3, 882, DateTimeKind.Local).AddTicks(9324),
+                            DateUp = new DateTime(2024, 12, 5, 15, 16, 38, 834, DateTimeKind.Local).AddTicks(1437),
                             Detail = "Our new apartments redefine elegance with state-of-the-art designs and facilities.",
                             Hide = true,
-                            ImagePath = "/images/news/luxury-apartments.jpg",
+                            Image1 = "/images/news/luxury-apartments.jpg",
+                            Image2 = "",
+                            Image3 = "",
+                            Image4 = "",
+                            Image5 = "",
+                            ImagePath = "",
                             Link = "/news/luxury-apartments",
                             Meta = "-3",
                             Order = 3,
-                            Title = "Luxury Apartments Now Available"
+                            Title = "Luxury Apartments Now Available",
+                            UpById = 0
                         });
                 });
 
@@ -366,9 +410,9 @@ namespace BatDongSan.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 12, 3, 11, 49, 3, 888, DateTimeKind.Local).AddTicks(4836),
+                            CreatedAt = new DateTime(2024, 12, 5, 15, 16, 38, 841, DateTimeKind.Local).AddTicks(4729),
                             Email = "admin@gmail.com",
-                            Password = "WbYNJET91kmcPuAeBTB/aQ==:VL2VW9ZvB0Q8QiBAHOAs8QaTGyWjyJmNSBClmX6KuLU=",
+                            Password = "I+Y5jyuufXzZozsrhcaSpA==:GeLYMY6g6fpPygCHdMi8W8yfP6ubPiQgUR/b09bIJfA=",
                             Role = "admin",
                             UserName = "Minh Thắng"
                         });

@@ -28,14 +28,12 @@ Layout = "_Layout1";
                             <label for="quanHuyen" class="form-label">Quận/Huyện</label>
                             <select class="form-select" id="quanHuyen" name="District" required onchange="loadXaPhuong()">
                                 <option value="" disabled selected>Chọn Quận/Huyện</option>
-                                <!-- Thêm các tùy chọn Quận/Huyện -->
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="xaPhuong" class="form-label">Xã/Phường</label>
                             <select class="form-select" id="xaPhuong" name="Ward" required>
                                 <option value="" disabled selected>Chọn Xã/Phường/Thị trấn</option>
-                                <!-- Thêm các tùy chọn Xã/Phường -->
                             </select>
                         </div>
                     </div>
@@ -92,132 +90,5 @@ Layout = "_Layout1";
         </div>
     </div>
 </div>
-<script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
- <script>
-     let provinceData = {}; // Biến toàn cục lưu dữ liệu tỉnh/thành phố
-     let districtData = {}; // Biến toàn cục lưu dữ liệu quận/huyện
-     let wardData = {};     // Biến toàn cục lưu dữ liệu xã/phường
-
-     // Hàm để tải danh sách Tỉnh/Thành phố
-     function loadTinhTp() {
-         fetch('/api/location/tinh_tp')
-             .then(response => response.json())
-             .then(data => {
-                 provinceData = data; // Lưu dữ liệu vào biến toàn cục
-                 const tinhTpSelect = document.getElementById('tinhThanh');
-                 tinhTpSelect.innerHTML = '<option value="" disabled selected>Chọn Tỉnh/Thành phố</option>';
-                 for (const key in data) {
-                     const option = document.createElement('option');
-                     option.value = key;
-                     option.textContent = data[key].name;
-                     tinhTpSelect.appendChild(option);
-                 }
-             });
-     }
-
-     // Hàm để tải danh sách Quận/Huyện theo Tỉnh/Thành phố
-     function loadQuanHuyen() {
-         const tinhId = document.getElementById('tinhThanh').value;
-         if (!tinhId) return;
-
-         fetch(`/api/location/quan_huyen?tinh_id=${tinhId}`)
-             .then(response => response.json())
-             .then(data => {
-                 districtData = data; // Lưu dữ liệu vào biến toàn cục
-                 const quanHuyenSelect = document.getElementById('quanHuyen');
-                 quanHuyenSelect.innerHTML = '<option value="" disabled selected>Chọn Quận/Huyện</option>';
-                 for (const key in data) {
-                     const option = document.createElement('option');
-                     option.value = key;
-                     option.textContent = data[key].name;
-                     quanHuyenSelect.appendChild(option);
-                 }
-             });
-     }
-
-     // Hàm để tải danh sách Xã/Phường theo Quận/Huyện
-     function loadXaPhuong() {
-         const quanId = document.getElementById('quanHuyen').value;
-         if (!quanId) return;
-
-         fetch(`/api/location/xa_phuong?quan_id=${quanId}`)
-             .then(response => response.json())
-             .then(data => {
-                 wardData = data; // Lưu dữ liệu vào biến toàn cục
-                 const xaPhuongSelect = document.getElementById('xaPhuong');
-                 xaPhuongSelect.innerHTML = '<option value="" disabled selected>Chọn Xã/Phường</option>';
-                 for (const key in data) {
-                     const option = document.createElement('option');
-                     option.value = key;
-                     option.textContent = data[key].name;
-                     xaPhuongSelect.appendChild(option);
-                 }
-             });
-     }
-     // Tải danh sách tỉnh/thành phố khi trang tải
-     window.onload = function () {
-         loadTinhTp();
-     };
-    let editorInstance;
-
-    // Cấu hình CKEditor
-    ClassicEditor
-        .create(document.querySelector('#Description'))
-        .then(editor => {
-            editorInstance = editor;
-        })
-        .catch(error => console.error(error));
-
-     function syncDescription() {
-         if (editorInstance) {
-             const rawContent = editorInstance.getData(); // Lấy nội dung từ CKEditor
-             const cleanedContent = rawContent
-                 .replace(/<p>/g, '') // Xóa thẻ mở `<p>`
-                 .replace(/<\/p>/g, '') // Xóa thẻ đóng `</p>`
-                 .trim(); // Xóa khoảng trắng đầu và cuối
-             const descriptionField = document.getElementById('Description');
-             descriptionField.value = cleanedContent; // Gán nội dung đã làm sạch vào input ẩn
-         }
-     }
-
-     // Hàm lấy địa chỉ đầy đủ
-    function getLocate() {
-        const provinceId = document.getElementById('tinhThanh').value;
-        const districtId = document.getElementById('quanHuyen').value;
-        const wardId = document.getElementById('xaPhuong').value;
-        const street = document.getElementById('diaChiCuThe').value;
-
-        const provinceName = provinceData[provinceId]?.name || '';
-        const districtName = districtData[districtId]?.name || '';
-        const wardName = wardData[wardId]?.name || '';
-
-        // Kết hợp các thành phần thành địa chỉ
-        return [provinceName, districtName, wardName, street].filter(Boolean).join(", ");
-    }
-
-    // Hàm gán địa chỉ vào input ẩn
-    function setLocate() {
-        document.getElementById('Locate').value = getLocate();
-    }
-</script>
- <script>
-     function handleFormSubmit() {
-
-         if (editorInstance) {
-             const descriptionField = document.getElementById('Description');
-             descriptionField.value = editorInstance.getData();
-         }
-         // Gọi hàm để đặt giá trị địa chỉ
-         setLocate();
-
-         // Gọi hàm để đồng bộ dữ liệu CKEditor
-         syncDescription();
-
-         // Hiển thị thông báo (nếu cần)
-         alert(document.getElementById('Description').value);
-
-         // Trả về true để cho phép gửi form
-         return true;
-     }
- </script>
-
+ <script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
+ <script src="~/js/PostProjectJs.js"></script>

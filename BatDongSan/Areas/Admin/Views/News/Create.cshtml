@@ -1,8 +1,8 @@
 @model BatDongSan.Models.News
 
 @{
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    ViewData["Title"] = "Trang Tạo tin tức";
+Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+ViewData["Title"] = "Trang Tạo tin tức";
 }
 
 <h1>Create</h1>
@@ -11,53 +11,73 @@
 <hr />
 <div class="row">
     <div class="col-12">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Title Field -->
             <div class="form-group">
                 <label asp-for="Title" class="control-label">Title</label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
+
+            <!-- Content Field -->
             <div class="form-group">
-                <label asp-for="Content" class="control-label"> Content</label>
-                <input asp-for="Content" class="form-control" />
+                <label asp-for="Content" class="control-label">Content</label>
+                <textarea asp-for="Content" class="form-control"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
+
+            <!-- Description Field (CKEditor) -->
             <div class="form-group">
-                <label asp-for="Detail" class="control-label">Detail</label>
-                <textarea id="Details" asp-for="Detail" class="form-control"></textarea>
-                <span asp-validation-for="Detail" class="text-danger"></span>
+                <label class="form-label">Mô tả</label>
+                <textarea id="Detail" name="Detail" class="form-control" hidden></textarea>
             </div>
-            <div class="form-group">
-                <label asp-for="ImagePath" class="control-label">Image</label>
-                <input type="text" asp-for="ImagePath" class="form-control" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
-            </div>
+
+            <!-- Link Field -->
             <div class="form-group">
                 <label asp-for="Link" class="control-label">Link</label>
                 <input asp-for="Link" class="form-control" />
                 <span asp-validation-for="Link" class="text-danger"></span>
             </div>
+
+            <!-- Meta Field -->
             <div class="form-group">
                 <label asp-for="Meta" class="control-label">Meta</label>
                 <input asp-for="Meta" class="form-control" />
                 <span asp-validation-for="Meta" class="text-danger"></span>
             </div>
+
+            <!-- Hide Checkbox -->
             <div class="form-group">
-                <label asp-for="Hide" class="control-label">Hide</label>
-                <input asp-for="Hide" class="form-control" />
-                <span asp-validation-for="Hide" class="text-danger"></span>
+                <div class="mb-4 form-check">
+                    <input asp-for="Hide" type="checkbox" class="form-check-input" />
+                    <label class="form-check-label" for="Hide">Hide</label>
+                </div>
             </div>
+
+            <!-- Order Field -->
             <div class="form-group">
                 <label asp-for="Order" class="control-label">Order</label>
                 <input asp-for="Order" class="form-control" />
                 <span asp-validation-for="Order" class="text-danger"></span>
             </div>
+
+            <!-- DateUp Field -->
             <div class="form-group">
                 <label asp-for="DateUp" class="control-label">DateUp</label>
-                <input asp-for="DateUp" class="form-control" value="@Model.DateUp"/>
+                <input asp-for="DateUp" class="form-control" value="@Model.DateUp" />
                 <span asp-validation-for="DateUp" class="text-danger"></span>
             </div>
+
+            <!-- Image Upload -->
+            <div class="form-group">
+                <label asp-for="Images" class="control-label">Image</label>
+                <input type="file" asp-for="Images" class="form-control" />
+                <span asp-validation-for="Images" class="text-danger"></span>
+            </div>
+
+            <!-- Submit Button -->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -68,11 +88,34 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-<script src="~/ckeditor/ckeditor.js"></script>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
 <script>
-    CKEDITOR.replace('Details', {
-        filebrowserBrowseUrl: '/ckeditor/ckeditor.html',  // Đường dẫn tới CKFinder
-        filebrowserUploadUrl: '/ckeditor/upload',          // Đường dẫn xử lý tải lên tệp
-        filebrowserUploadMethod: 'form',                    // Phương thức tải lên
+    let editorInstance;
+
+    // Initialize CKEditor
+    ClassicEditor
+        .create(document.querySelector('#Detail'))
+        .then(editor => {
+            editorInstance = editor;
+        })
+        .catch(error => console.error(error));
+
+    // Function to sync CKEditor content with hidden input
+    function syncDescription() {
+        if (editorInstance) {
+            const rawContent = editorInstance.getData(); // Get content from CKEditor
+            const cleanedContent = rawContent
+                .replace(/<p>/g, '') // Remove opening <p> tags
+                .replace(/<\/p>/g, '') // Remove closing </p> tags
+                .trim(); // Trim leading and trailing spaces
+            const descriptionField = document.getElementById('Detail');
+            descriptionField.value = cleanedContent; // Set cleaned content to the hidden input field
+        }
+    }
+
+    // Ensure CKEditor content is synced before form submission
+    document.querySelector('form').addEventListener('submit', function () {
+        syncDescription();
     });
 </script>

@@ -131,23 +131,23 @@ namespace BatDongSan.Controllers
             {
                 return NotFound();
             }
-
             var projects = await _context.Projects.FindAsync(id);
             if (projects == null)
             {
                 return NotFound();
             }
+
+            ViewBag.ProjectById = projects;
             var menuItems = _menuService.GetMenuItems();
             ViewBag.MenuItems = menuItems;
             return View(projects);
         }
 
-        // POST: ManageProject/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProjects(int id, [Bind("Id,Name,Description,Link,Meta,Hide,Order,Type,Locate,Price,Area,DateUp,upById,Image1,Image2,Image3,Image4,Image5")] Projects projects, IFormFile Image1, IFormFile Image2, IFormFile Image3, IFormFile Image4, IFormFile Image5)
+        public async Task<IActionResult> EditProjects(int id, Projects updatedProject, List<IFormFile> uploadedImages)
         {
-            if (id != projects.Id)
+            if (id != updatedProject.Id)
             {
                 return NotFound();
             }
@@ -156,55 +156,89 @@ namespace BatDongSan.Controllers
             {
                 try
                 {
-                    // Handle image upload and deletion if images are updated
-                    string[] imageProperties = { "Image1", "Image2", "Image3", "Image4", "Image5" };
-                    var imageFiles = new[] { Image1, Image2, Image3, Image4, Image5 };
+                    var existingProject = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id);
+                    if (existingProject == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update fields
+                    existingProject.Name = updatedProject.Name ?? existingProject.Name;
+                    existingProject.Description = updatedProject.Description ?? existingProject.Description;
+                    existingProject.Hide = updatedProject.Hide;
+                    existingProject.Order = updatedProject.Order;
+                    existingProject.Type = updatedProject.Type;
+                    existingProject.Price = updatedProject.Price ?? existingProject.Price;
+                    existingProject.Area = updatedProject.Area ?? existingProject.Area;
+                    existingProject.DateUp = updatedProject.DateUp;
+
+                    // Update address
+                    var province = Request.Form["Province"];
+                    var district = Request.Form["District"];
+                    var ward = Request.Form["Ward"];
+                    var street = Request.Form["Street"];
+                    if (!string.IsNullOrEmpty(province) || !string.IsNullOrEmpty(district) || !string.IsNullOrEmpty(ward) || !string.IsNullOrEmpty(street))
+                    {
+                        existingProject.Locate = $"{province}, {district}, {ward}, {street}".Trim(',', ' ');
+                    }
+
+                    // Handle images
+                    var imageProperties = new[] { "Image1", "Image2", "Image3", "Image4", "Image5" };
+                    var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                    if (!Directory.Exists(uploadDir))
+                    {
+                        Directory.CreateDirectory(uploadDir);
+                    }
 
                     for (int i = 0; i < imageProperties.Length; i++)
                     {
                         var imageProperty = imageProperties[i];
-                        var imageFile = imageFiles[i];
+                        var existingImage = existingProject.GetType().GetProperty(imageProperty)?.GetValue(existingProject)?.ToString();
+                        var uploadedImage = uploadedImages.ElementAtOrDefault(i);
 
-                        // If the image is not null (i.e., user uploaded a new image)
-                        if (imageFile != null)
+                        if (uploadedImage != null)
                         {
-                            // Delete the old image if it exists
-                            var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", (string)typeof(Projects).GetProperty(imageProperty).GetValue(projects));
-                            if (System.IO.File.Exists(oldImagePath))
+                            // Delete old image
+                            if (!string.IsNullOrEmpty(existingImage))
                             {
-                                System.IO.File.Delete(oldImagePath);
+                                var oldImagePath = Path.Combine(uploadDir, existingImage);
+                                if (System.IO.File.Exists(oldImagePath))
+                                {
+                                    System.IO.File.Delete(oldImagePath);
+                                }
                             }
 
-                            // Save the new image
-                            var filePath = Path.Combine("wwwroot/uploads", Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName));
-
-                            using (var stream = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), filePath), FileMode.Create))
+                            // Save new image
+                            var newFileName = Guid.NewGuid() + Path.GetExtension(uploadedImage.FileName);
+                            var newImagePath = Path.Combine(uploadDir, newFileName);
+                            await using (var stream = new FileStream(newImagePath, FileMode.Create))
                             {
-                                await imageFile.CopyToAsync(stream);
+                                await uploadedImage.CopyToAsync(stream);
                             }
 
-                            // Update the project object with the new image path
-                            typeof(Projects).GetProperty(imageProperty).SetValue(projects, filePath.Replace("wwwroot", ""));
+                            // Update project image property
+                            existingProject.GetType().GetProperty(imageProperty)?.SetValue(existingProject, newFileName);
                         }
                     }
 
-                    _context.Update(projects);
+                    // Save changes
+                    _context.Projects.Update(existingProject);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Detail", new { id = existingProject.Id });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectsExists(projects.Id))
+                    if (!_context.Projects.Any(p => p.Id == id))
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(projects);
+
+            return View(updatedProject);
         }
 
         // POST: ManageProject/Delete/5
@@ -215,31 +249,40 @@ namespace BatDongSan.Controllers
             var projects = await _context.Projects.FindAsync(id);
             if (projects != null)
             {
-                // Delete images from wwwroot/uploads/ folder
+                // Danh sách các thuộc tính ảnh
                 var imageProperties = new[] { "Image1", "Image2", "Image3", "Image4", "Image5" };
+
                 foreach (var imageProperty in imageProperties)
                 {
-                    var imagePath = (string)typeof(Projects).GetProperty(imageProperty).GetValue(projects);
+                    // Lấy giá trị của thuộc tính ảnh
+                    var imagePath = (string)typeof(Projects).GetProperty(imageProperty)?.GetValue(projects);
                     if (!string.IsNullOrEmpty(imagePath))
                     {
-                        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagePath);
-                        if (System.IO.File.Exists(fullPath))
+                        // Nối đường dẫn đầy đủ
+                        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", imagePath);
+                        try
                         {
-                            System.IO.File.Delete(fullPath);
+                            if (System.IO.File.Exists(fullPath))
+                            {
+                                System.IO.File.Delete(fullPath); // Xóa file
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log lỗi nếu cần, hoặc tiếp tục mà không dừng chương trình
+                            Console.WriteLine($"Error deleting file {fullPath}: {ex.Message}");
                         }
                     }
                 }
 
+                // Xóa bản ghi khỏi database
                 _context.Projects.Remove(projects);
+
+                // Lưu thay đổi
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProjectsExists(int id)
-        {
-            return _context.Projects.Any(e => e.Id == id);
+            return RedirectToAction("ProjectManagement");
         }
 
         // POST: Upload images from CKEditor
@@ -341,7 +384,7 @@ namespace BatDongSan.Controllers
                 await _context.SaveChangesAsync();
 
                 // Redirect to the project detail page after saving
-                return View("Detail", new { id = project.Id });
+                return RedirectToAction("Detail", new { id = project.Id });
             }
 
             // Return to form with errors if model is invalid
@@ -353,12 +396,15 @@ namespace BatDongSan.Controllers
             var menuItems = _menuService.GetMenuItems();
             ViewBag.MenuItems = menuItems;
             var project = _projectService.GetProjectDetail(id); // Replace with your actual data-fetching method.
-
+            if (project == null)
+            {
+                return NotFound(); // Handle the case when no project is found.
+            }
             var top5Projects = _projectService.GetTop5(); // Replace with actual logic.
             ViewBag.Top5Pro = top5Projects;
             ViewBag.ProjectById = project;
 
-            return View(project);
+            return View();
         }
 
         private string RemoveVietnameseTone(string str)

@@ -10,12 +10,14 @@ namespace BatDongSan.Controllers
         private readonly MenuService _menuService;
         private readonly NewsService _newsService;
         private readonly MyDbContext _context;
+        private readonly ProjectService _projectService;
 
-        public NewsController(MenuService menuService, NewsService newsService, MyDbContext context)
+        public NewsController(MenuService menuService, NewsService newsService, MyDbContext context, ProjectService projectService, NewsService newService)
         {
             _menuService = menuService;
             _newsService = newsService;
             _context = context;
+            _projectService = projectService;
         }
 
         // GET: News/Create
@@ -67,7 +69,18 @@ namespace BatDongSan.Controllers
             var newsList = await _context.News.ToListAsync(); // Lấy danh sách bài viết từ database
             return View("news", newsList); // Truyền danh sách bài viết sang View
         }
-        
+        public IActionResult Detail(int id)
+        {
+            var menuItems = _menuService.GetMenuItems();
+            ViewBag.MenuItems = menuItems;
+            var salePro = _projectService.GetSalePro();
+            ViewBag.SalePro = salePro;
+            var news = _newsService.GetTop4();
+            ViewBag.News = news;
+
+            return View();
+        }
+
         
     }
 }

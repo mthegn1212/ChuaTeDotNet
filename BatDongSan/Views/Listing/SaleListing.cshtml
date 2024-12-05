@@ -51,28 +51,29 @@
 						else
 							foreach (var pro in ViewBag.SalePro)
 							{
-								<a href="@Url.Action("Detail", "Listing", new { id = pro.Id })" class="item col-md-6" style="text-decoration: none; color: inherit;">
-									<div class="properties ftco-animate">
-										<img src="@Url.Content("~/uploads/" + pro.Image1)" style="display: block; height: 300px; width: 100%;" alt="@pro.Name">
-										<div class="desc">
-											<div class="d-flex pt-5">
-												<div>
-													<h3>@pro.Name</h3>
+								if (!pro.Hide)
+								{
+									<a href="@Url.Action("Detail", "Listing", new { id = pro.Id })" class="item col-md-6" style="text-decoration: none; color: inherit;">
+										<div class="properties ftco-animate">
+											<img src="@Url.Content("~/uploads/" + pro.Image1)" style="display: block; height: 300px; width: 100%;" alt="@pro.Name">
+											<div class="desc">
+												<div class="d-flex pt-5">
+													<div>
+														<h3>@pro.Name</h3>
+													</div>
 												</div>
-											</div>
-											<div class="pr-md-3">
-												<span class="price" style="align-items:flex-start">@pro.Price VNĐ - @pro.Area m²</span>
-												<span class="h-info pr-1">
-													<span><i class="fas fa-map-marker-alt m-1"></i></span>
-													<span class="location" style="color: black">@pro.Locate</span>
-												</span>
-											</div>
-											<span>
+												<div class="pr-md-3">
+													<span class="price" style="align-items:flex-start">@pro.Price VNĐ - @pro.Area m²</span>
+													<span class="h-info pr-1">
+														<span><i class="fas fa-map-marker-alt m-1"></i></span>
+														<span class="location" style="color: black">@pro.Locate</span>
+													</span>
+												</div>
 												<p>@pro.Description</p>
-											</span>
+											</div>
 										</div>
-									</div>
-								</a>
+									</a>
+								}
 							}
 					}
 				</div>
