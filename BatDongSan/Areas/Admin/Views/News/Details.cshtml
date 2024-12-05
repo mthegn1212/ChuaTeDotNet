@@ -26,7 +26,7 @@ ViewData["Title"] = "News Details";
     <strong>Meta:</strong> @Model.Meta
 </div>
 <div>
-    <strong>Hide:</strong> @(Model.Hide ? (Model.Hide ? "Yes" : "No") : "Not Set")
+    <strong>Hide:</strong> @(Model.Hide.HasValue ? (Model.Hide.Value ? "Yes" : "No") : "Not Set")
 </div>
 <div>
     <strong>Order:</strong> @Model.Order

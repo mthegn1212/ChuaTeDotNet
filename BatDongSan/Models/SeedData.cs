@@ -32,7 +32,7 @@ namespace BatDongSan.Models
                     Meta = "-1",
                     Hide = false,
                     Order = 1,
-                    Image1 = "/images/news/laclongquan-tower.jpg",
+                    ImagePath = "/images/news/laclongquan-tower.jpg",
                     DateUp = DateTime.Now
                 },
                 new News
@@ -45,7 +45,7 @@ namespace BatDongSan.Models
                     Meta = "-2",
                     Hide = false,
                     Order = 2,
-                    Image1 = "/images/news/green-home.jpg",
+                    ImagePath = "/images/news/green-home.jpg",
                     DateUp = DateTime.Now
                 },
                 new News
@@ -58,7 +58,7 @@ namespace BatDongSan.Models
                     Meta = "-3",
                     Hide = true,
                     Order = 3,
-                    Image1 = "/images/news/luxury-apartments.jpg",
+                    ImagePath = "/images/news/luxury-apartments.jpg",
                     DateUp = DateTime.Now
                 }
             );
