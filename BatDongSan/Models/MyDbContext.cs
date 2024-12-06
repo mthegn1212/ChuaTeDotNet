@@ -14,6 +14,7 @@ namespace BatDongSan.Models
         public DbSet<Projects> Projects { get; set; }
         public DbSet<Users> Users { get; set; }
 		public DbSet<ChildMenus> ChildMenus { get; set; }
+		public DbSet<HeaderFooter> HeaderFooter { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

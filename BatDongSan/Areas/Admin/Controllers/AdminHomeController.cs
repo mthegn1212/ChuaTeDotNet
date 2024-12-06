@@ -28,5 +28,11 @@ namespace BatDongSan.Areas.Admin.Controllers
         {
             return RedirectToAction("Index", "News", new { area = "Admin" });
         }
+        
+        // Điều hướng đến Quản lý HeaderFooter
+        public IActionResult ManageHeaderFooter()
+        {
+            return RedirectToAction("Index", "HeaderFooter", new { area = "Admin" });
+        }
     }
 }

@@ -19,29 +19,38 @@
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
 </head>
 <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+@inject MyDbContext dbContext
+
 @{
-    var userName = Context.Session.GetString("UserName") ?? string.Empty;
-    var userEmail = Context.Session.GetString("UserSessionKey") ?? string.Empty;
+    var userName = Context.Session.GetString("UserName");
+    var userEmail = Context.Session.GetString("UserSessionKey");
+    var headerFooters = dbContext.HeaderFooter.ToList();
+    var siteName = headerFooters.FirstOrDefault(h => h.Id == 1)?.Content ?? "Default Site Name";
+    var phone = headerFooters.FirstOrDefault(h => h.Id == 2)?.Content ?? "0942 824 505";
+    var email = headerFooters.FirstOrDefault(h => h.Id == 3)?.Content ?? "GoodLands@gmail.com";
+    var footerText = headerFooters.FirstOrDefault(h => h.Id == 4)?.Content ?? "Far far away, behind the word mountains, far from the countries.";
+    var welcomeMessage = headerFooters.FirstOrDefault(h => h.Id == 5)?.Content ?? "Welcome, ";
 }
+
 <header>
-    <div class="py-1 bg-black top ">
+    <div class="py-1 bg-black top">
         <div class="container">
             <div class="row no-gutters d-flex align-items-start align-items-center px-md-0">
                 <div class="col-lg-12 col-sm-12 d-block">
                     <div class="row d-flex">
                         <div class="col-md pr-4 d-flex topper align-items-center">
                             <div class="icon mr-2 d-flex justify-content-center align-items-center"><i class="fas fa-phone"></i></div>
-                            <span class="text"><a href="#" class="phone">0942 824 505 </a></span>
+                            <span class="text"><a href="tel:@phone" class="phone">@phone</a></span>
                         </div>
                         <div class="col-md pr-4 d-flex topper align-items-center">
                             <div class="icon mr-2 d-flex justify-content-center align-items-center"><span class="fas fa-paper-plane"></span></div>
-                            <span class="text">GoodLands@gmail.com</span>
+                            <span class="text"><a href="mailto:@email">@email</a></span>
                         </div>
                         <div class="col-md pr-4 d-flex topper align-items-center text-lg-right justify-content-end">
                             <p class="mb-0 register-link">
                                 @if (!string.IsNullOrEmpty(userName))
                                 {
-                                    <span>Welcome, @userName</span>
+                                    <span>@welcomeMessage @userName</span>
                                     <form asp-controller="SignIn" asp-action="Logout" method="post" style="display:inline;">
                                         <button type="submit" class="btn-link" style="border:none; background:none; color:white; cursor:pointer;">Log Out</button>
                                     </form>
@@ -58,51 +67,14 @@
             </div>
         </div>
     </div>
-
     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar ftco-navbar-light site-navbar-target border-1" id="ftco-navbar">
         <div class="container">
-            <a class="navbar-brand" href="/" style="color: black">GoodLands</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="oi oi-menu"></span> Menu
-            </button>
-
-            <div class="collapse navbar-collapse" id="ftco-nav">
-                <ul class="navbar-nav nav ml-auto">
-                    @if (ViewBag.MenuItems != null)
-                    {
-                    @foreach (var item in ViewBag.MenuItems)
-                    {
-                    if (item.HasChild())
-                    {
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" style="color: black" href="@item.Link" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            @item.Name
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            @foreach (var child in item.ChildMenus)
-                            {
-                            <li><a class="dropdown-item" href="@item.Link@child.Link">@child.Name</a></li>
-                            }
-                        </ul>
-                    </li>
-                    }
-                    else
-                    {
-                    <li class="nav-item">
-                        <a href="@item.Link" class="nav-link" style="color: black"><span>@item.Name</span></a>
-                    </li>
-                    }
-                    }
-                    }
-                    else
-                    {
-                    <p>Menu items not found!</p>
-                    }
-                </ul>
-            </div>
+            <a class="navbar-brand" href="/" style="color: black">@siteName</a>
+            <!-- Menu items will be rendered here -->
         </div>
     </nav>
 </header>
+
 
 @RenderBody()
 
