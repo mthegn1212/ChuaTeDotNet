@@ -69,18 +69,27 @@ namespace BatDongSan.Controllers
             var newsList = await _context.News.ToListAsync(); // Lấy danh sách bài viết từ database
             return View("news", newsList); // Truyền danh sách bài viết sang View
         }
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
-            var menuItems = _menuService.GetMenuItems();
-            ViewBag.MenuItems = menuItems;
-            var salePro = _projectService.GetSalePro();
-            ViewBag.SalePro = salePro;
-            var news = _newsService.GetTop4();
-            ViewBag.News = news;
+            // Fetch the news details by ID
+            var news = await _context.News.FirstOrDefaultAsync(n => n.Id == id);
+            if (news == null)
+            {
+                return NotFound(); // Return 404 if the news is not found
+            }
 
-            return View();
+            // Get related news (example logic, adjust based on your structure)
+            var relatedNews = await _context.News
+                .Where(n => n.Id != id) // Exclude the current news
+                .OrderByDescending(n => n.DateUp) // Sort by date
+                .Take(4) // Limit to 4 related news
+                .ToListAsync();
+
+            // Populate the ViewBag with related news
+            ViewBag.RelatedNews = relatedNews;
+
+            // Return the view with the news model
+            return View(news);
         }
-
-        
     }
 }

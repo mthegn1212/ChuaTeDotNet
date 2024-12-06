@@ -51,6 +51,11 @@ namespace BatDongSan.Controllers
             var news = _newService.GetTop4();
             ViewBag.News = news;
 
+            // SEO tags
+            ViewData["Title"] = "Rent Properties - Bat Dong San";
+            ViewData["Description"] = "Browse rental properties available for rent in your area.";
+            ViewData["Keywords"] = "rental properties, apartments for rent, houses for rent";
+
             return View("RentListing");
         }
 
@@ -63,9 +68,14 @@ namespace BatDongSan.Controllers
             var news = _newService.GetTop4();
             ViewBag.News = news;
 
+            // SEO tags
+            ViewData["Title"] = "Sale Properties - Bat Dong San";
+            ViewData["Description"] = "Find properties available for sale at Bat Dong San. Discover homes, apartments, and land for sale.";
+            ViewData["Keywords"] = "sale properties, real estate for sale, houses for sale";
+
             return View("SaleListing");
         }
-        
+
         public IActionResult Listing()
         {
             var menuItems = _menuService.GetMenuItems();
@@ -78,7 +88,6 @@ namespace BatDongSan.Controllers
             return View();
         }
 
-        // GET: PostNew (Page for posting a new project)
         public IActionResult PostProject()
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserName")))
@@ -87,7 +96,7 @@ namespace BatDongSan.Controllers
                 return RedirectToAction("Login", "SignIn");
             }
             string filePath1 = Path.Combine(_webHostEnvironment.WebRootPath, "data", "quan_huyen.json");
-                        Console.WriteLine(filePath1);
+            Console.WriteLine(filePath1);
 
             var model = new Projects();
 
@@ -100,31 +109,23 @@ namespace BatDongSan.Controllers
             var news = _newService.GetTop4();
             ViewBag.News = news;
 
-            return View("PostProject", model); // Pass the model to the view
+            return View("PostProject", model); 
         }
-        
-        // GET: ManageProject
+
         public IActionResult ProjectManagement()
         {
-            // Get the user ID from session
             int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
 
             if (userId == 0)
             {
-                // If the user is not logged in or session is invalid, redirect to login
                 return RedirectToAction("Login", "SignIn");
             }
             var menuItems = _menuService.GetMenuItems();
             ViewBag.MenuItems = menuItems;
-            // Fetch all projects where UpById matches the UserId
             var userProjects = _context.Projects.Where(p => p.upById == userId).ToList();
-
-            // Pass the projects to the view
             return View(userProjects);
         }
 
-        
-        // GET: ManageProject/Edit/5
         public async Task<IActionResult> EditProjects(int? id)
         {
             if (id == null)
@@ -137,9 +138,14 @@ namespace BatDongSan.Controllers
                 return NotFound();
             }
 
+            // Cập nhật ViewData cho SEO
+            ViewData["Title"] = "Chỉnh sửa dự án - " + projects.Name;
+            ViewData["Description"] = "Chỉnh sửa dự án " + projects.Name + " với các thông tin như tên, diện tích, giá và mô tả.";
+
             ViewBag.ProjectById = projects;
             var menuItems = _menuService.GetMenuItems();
             ViewBag.MenuItems = menuItems;
+    
             return View(projects);
         }
 
@@ -241,7 +247,6 @@ namespace BatDongSan.Controllers
             return View(updatedProject);
         }
 
-        // POST: ManageProject/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -249,42 +254,44 @@ namespace BatDongSan.Controllers
             var projects = await _context.Projects.FindAsync(id);
             if (projects != null)
             {
-                // Danh sách các thuộc tính ảnh
                 var imageProperties = new[] { "Image1", "Image2", "Image3", "Image4", "Image5" };
 
                 foreach (var imageProperty in imageProperties)
                 {
-                    // Lấy giá trị của thuộc tính ảnh
                     var imagePath = (string)typeof(Projects).GetProperty(imageProperty)?.GetValue(projects);
                     if (!string.IsNullOrEmpty(imagePath))
                     {
-                        // Nối đường dẫn đầy đủ
                         var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", imagePath);
-                        try
+                        if (System.IO.File.Exists(fullPath))
                         {
-                            if (System.IO.File.Exists(fullPath))
-                            {
-                                System.IO.File.Delete(fullPath); // Xóa file
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            // Log lỗi nếu cần, hoặc tiếp tục mà không dừng chương trình
-                            Console.WriteLine($"Error deleting file {fullPath}: {ex.Message}");
+                            System.IO.File.Delete(fullPath);
                         }
                     }
                 }
 
-                // Xóa bản ghi khỏi database
                 _context.Projects.Remove(projects);
-
-                // Lưu thay đổi
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("ProjectManagement");
+            return RedirectToAction(nameof(ProjectManagement));
         }
 
+        public IActionResult Detail(int id)
+        {
+            var menuItems = _menuService.GetMenuItems();
+            ViewBag.MenuItems = menuItems;
+            var project = _projectService.GetProjectDetail(id); // Replace with your actual data-fetching method.
+            if (project == null)
+            {
+                return NotFound(); // Handle the case when no project is found.
+            }
+            var top5Projects = _projectService.GetTop5(); // Replace with actual logic.
+            ViewBag.Top5Pro = top5Projects;
+            ViewBag.ProjectById = project;
+
+            return View();
+        }
+        
         // POST: Upload images from CKEditor
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile upload)
@@ -390,23 +397,6 @@ namespace BatDongSan.Controllers
             // Return to form with errors if model is invalid
             return View("PostProject", model: new Projects());
         }
-
-        public IActionResult Detail(int id)
-        {
-            var menuItems = _menuService.GetMenuItems();
-            ViewBag.MenuItems = menuItems;
-            var project = _projectService.GetProjectDetail(id); // Replace with your actual data-fetching method.
-            if (project == null)
-            {
-                return NotFound(); // Handle the case when no project is found.
-            }
-            var top5Projects = _projectService.GetTop5(); // Replace with actual logic.
-            ViewBag.Top5Pro = top5Projects;
-            ViewBag.ProjectById = project;
-
-            return View();
-        }
-
         private string RemoveVietnameseTone(string str)
         {
             // Chuyển đổi dấu tiếng Việt thành không dấu

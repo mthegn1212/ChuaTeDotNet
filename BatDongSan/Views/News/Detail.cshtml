@@ -2,7 +2,9 @@
 
 @{
 ViewData["Title"] = "News Detail";
+/*
 Layout = "_Layout1";
+*/
 }
 
 <body class="ftco-section">
@@ -13,18 +15,18 @@ Layout = "_Layout1";
             <div id="newsCarousel" class="carousel" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <!-- Main Image -->
-                    @if (!string.IsNullOrEmpty(Model.ImagePath))
-                    {
+                    @*@if (!string.IsNullOrEmpty(Model.ImagePath))
+                    {*@
                     <div class="carousel-item active">
                         <img src="@Url.Content("~/uploads/0f0ca1db-569f-4f73-9112-80c67c9296a5.png")" class="d-block w-100 fixed-size-img" alt="News Image">
                     </div>
-                    }
+                    @*}
                     else
                     {
                     <div class="carousel-item active">
                         <p>No image available.</p>
                     </div>
-                    }
+                    }*@
                 </div>
             </div>
 

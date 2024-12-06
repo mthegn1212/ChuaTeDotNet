@@ -1,15 +1,20 @@
 @model BatDongSan.Models.Projects
 
 @{
-ViewData["Title"] = "Edit Project";
 Layout = "_Layout1";
 }
 @{
-    var pro = ViewBag.ProjectById;
+var pro = ViewBag.ProjectById;
 }
+<!-- SEO Meta Tags -->
+<head>
+    <title>@ViewData["Title"]</title>
+    <meta name="description" content="@ViewData["Description"]">
+</head>
+    
 <section class="ftco-section">
     <div class="container">
-        <h2 class="text-center mb-5">Edit Your Project</h2>
+        <h2 class="text-center mb-5">Chỉnh sửa dự án của bạn</h2>
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <form asp-action="EditProjects" enctype="multipart/form-data" class="shadow p-4 bg-white rounded">
@@ -18,32 +23,32 @@ Layout = "_Layout1";
 
                     <!-- Name -->
                     <div class="mb-4">
-                        <label asp-for="Name" class="form-label">Project Name</label>
+                        <label asp-for="Name" class="form-label">Tên dự án</label>
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
                     <!-- Area -->
                     <div class="mb-4">
-                        <label asp-for="Area" class="form-label">Area</label>
+                        <label asp-for="Area" class="form-label">Diện tích</label>
                         <input asp-for="Area" class="form-control" />
                         <span asp-validation-for="Area" class="text-danger"></span>
                     </div>
 
                     <!-- Price -->
                     <div class="mb-4">
-                        <label asp-for="Price" class="form-label">Price</label>
+                        <label asp-for="Price" class="form-label">Giá</label>
                         <input asp-for="Price" class="form-control" />
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
 
                     <!-- Locate -->
                     <div class="mb-4">
-                        <label asp-for="Locate" class="form-label">Locate</label>
+                        <label asp-for="Locate" class="form-label">Địa chỉ</label>
                         <div class="input-group">
                             <input asp-for="Locate" id="displayLocate" type="text" class="form-control" readonly placeholder="Click to select address">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addressModal">
-                                Change
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addressModal" aria-label="Change address">
+                                Thay đổi
                             </button>
                         </div>
                         <input asp-for="Locate" type="hidden" id="Locate" />
@@ -52,19 +57,19 @@ Layout = "_Layout1";
 
                     <!-- Description -->
                     <div class="mb-4">
-                        <label class="form-label">Old Description:</label>
+                        <label class="form-label">Mô tả cũ:</label>
                         <p class="text-muted">@pro.Description</p>
-                        <label asp-for="Description" class="form-label">New Description:</label>
+                        <label asp-for="Description" class="form-label">Mô tả mới:</label>
                         <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
 
                     <!-- Type -->
                     <div class="mb-4">
-                        <label for="loaiBDS" class="form-label">Type</label>
+                        <label for="loaiBDS" class="form-label">Loại</label>
                         <select asp-for="Type" class="form-select" id="loaiBDS" name="Type" required>
-                            <option value=0 selected>Rent</option>
-                            <option value=1>Sell</option>
+                            <option value="0" selected>Cho thuê</option>
+                            <option value="1">Bán</option>
                         </select>
                     </div>
 
@@ -92,13 +97,13 @@ Layout = "_Layout1";
 
                     <!-- Upload Images -->
                     <div class="mb-4">
-                        <label for="uploadAnh" class="form-label">Upload Images</label>
+                        <label for="uploadAnh" class="form-label">Tải lên ảnh</label>
                         <input type="file" class="form-control" id="uploadAnh" name="uploadedImages" multiple accept="image/*">
                     </div>
 
                     <!-- Submit Button -->
                     <div class="mb-4 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary px-4">Save</button>
+                        <button type="submit" class="btn btn-primary px-4">Lưu</button>
                     </div>
                 </form>
             </div>
@@ -111,7 +116,7 @@ Layout = "_Layout1";
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addressModalLabel">Select Address</h5>
+                <h5 class="modal-title" id="addressModalLabel">Chọn địa chỉ</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -120,8 +125,8 @@ Layout = "_Layout1";
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary">Xác nhận</button>
             </div>
         </div>
     </div>

@@ -115,8 +115,8 @@ function setLocate() {
 function handleFormSubmit() {
 
     if (editorInstance) {
-    const descriptionField = document.getElementById('Description');
-    descriptionField.value = editorInstance.getData();
+        const descriptionField = document.getElementById('Description');
+        descriptionField.value = editorInstance.getData();
     }
     // Gọi hàm để đặt giá trị địa chỉ
     setLocate();
